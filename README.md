@@ -38,8 +38,8 @@ The project consists of the following files:
 1. **Clone the repository**:
 
     ```bash
-    git clone https://github.com/JI1IN/task-tracker.git
-    cd task-tracker
+    git clone https://github.com/JI1IN/Task-Tracker.git
+    cd Task-Tracker
     ```
 
 2. **Run the program**:
