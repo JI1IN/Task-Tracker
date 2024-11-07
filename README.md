@@ -1,4 +1,3 @@
-Sure! Below is a README.md file for your Task Tracker application.
 
 ---
 
