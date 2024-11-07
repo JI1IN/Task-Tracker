@@ -1,78 +1,90 @@
 from datetime import datetime
-from TaskTracker import TaskTracker
 import pandas as pd
-
-tracker = TaskTracker()
-
-
-def sort_dict(asc):
-    global tracker
-    tasks = tracker.get_tasks()
-    if tasks is None or len(tasks) == 0:
-        print("Nothing to sort")
-    if asc is True:
-        sorted_dict = pd.Series(tasks).sort_values(ascending=True)
-    else:
-        sorted_dict = pd.Series(tasks).sort_values(ascending=False)
-    print(sorted_dict)
+from TaskTracker import TaskTracker
 
 
-def add_to_dict():
-    global tracker
+def sort_dict(tasks, asc=True):
+    if not tasks:
+        print("No tasks to sort.")
+        return
+    sorted_tasks = pd.Series(tasks).sort_values(ascending=asc)
+    print(sorted_tasks)
+
+
+def add_to_dict(tracker):
     user_input = input('Enter a task: ')
-    user_input1 = input('Enter a date(format: dd.mm.yyyy): ')
+    user_input1 = input('Enter a date (format: dd.mm.yyyy): ')
     date_of_task = datetime.strptime(user_input1, '%d.%m.%Y')
     tracker.add_task(user_input, date_of_task)
 
 
-def get_tasks_from_dict():
-    global tracker
-    for tasks, date in tracker.get_tasks().items():
-        print(tasks, date)
+def get_tasks_from_dict(tracker):
+    all_tasks = tracker.get_all_tasks()
+    for task, date in all_tasks.items():
+        print(f'{task} - {date.strftime("%d.%m.%Y")}')
 
 
-def remove_task_from_dict(task):
-    global tracker
+def remove_task_from_dict(tracker, task):
     if task is None:
         print('Task cannot be None')
         return
-
-    tasks = tracker.get_tasks()
-    if task in tasks:
+    if task in tracker.get_tasks_not_done():
         tracker.remove_task(task)
-        print(f'Task "{task}" removed')
+        print(f'Task "{task}" removed from to-do list.')
+    elif task in tracker.get_tasks_done():
+        tracker.remove_task(task)
+        print(f'Task "{task}" removed from done list.')
     else:
         print(f'Task "{task}" not found')
 
 
-def Loop():
-    while True:
-        print("add, get, remove, sort tasks")
-        user_input = input("What task do you want to perform?: ")
-        user_input = user_input.lower().strip()
-        if user_input == 'add':
-            add_to_dict()
-        elif user_input == 'get':
-            get_tasks_from_dict()
-        elif user_input == 'remove':
-            user_input = input("What task do you want to remove?: ")
-            remove_task_from_dict(user_input)
-        elif user_input == "sort":
-            user_input = input("Sort tasks in ascending order or descending order? (asc or desc): ")
-            if user_input == 'asc':
-                sort_dict(asc=True)
+def mark_task_done(tracker, task):
+    tracker.mark_task_done(task)
+    print(f'Task "{task}" has been marked as done.')
+
+
+def unmark_task_done(tracker, task):
+    tracker.unmark_task_done(task)
+    print(f'Task "{task}" has been unmarked from done.')
+
+
+def loop(tracker):
+    try:
+        while True:
+            print("Options: add, get, remove, mark done, unmark done, sort task: todo, done, all")
+            user_input = input("What task do you want to perform?: ").lower().strip()
+
+            if user_input == 'add':
+                add_to_dict(tracker)
+            elif user_input == 'get':
+                get_tasks_from_dict(tracker)
+            elif user_input == 'remove':
+                task = input("What task do you want to remove?: ")
+                remove_task_from_dict(tracker, task)
+            elif user_input == 'mark done':
+                task = input("What task do you want to mark as done?: ")
+                mark_task_done(tracker, task)
+            elif user_input == 'unmark done':
+                task = input("What task do you want to unmark as done?: ")
+                unmark_task_done(tracker, task)
+            elif user_input == "sort todo":
+                sort_dict(tracker.get_tasks_not_done(), asc=True)
+            elif user_input == "sort done":
+                sort_dict(tracker.get_tasks_done(), asc=True)
+            elif user_input == "sort all":
+                sort_dict(tracker.get_all_tasks(), asc=True)
             else:
-                sort_dict(asc=False)
-        else:
-            print("Invalid Input, please try again")
+                print("Invalid Input, please try again.")
+    except KeyboardInterrupt:
+        print("User cancelled.")
+    except ValueError:
+        print("Invalid Input, please try again.")
 
 
 def main():
-    try:
-        Loop()
-    except ValueError:
-        print('Invalid input')
-    except KeyboardInterrupt:
-        print('\nClosing program...')
+    tracker = TaskTracker()
+    loop(tracker)
+
+
 if __name__ == "__main__":
     main()
