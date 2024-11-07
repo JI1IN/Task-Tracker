@@ -2,6 +2,8 @@ from datetime import datetime
 import pandas as pd
 from TaskTracker import TaskTracker
 
+# Add priority for tasks, add simple GUI using Tkinter later
+
 
 def sort_dict(tasks, asc=True):
     if not tasks:
@@ -13,7 +15,7 @@ def sort_dict(tasks, asc=True):
 
 def add_to_dict(tracker):
     user_input = input('Enter a task: ')
-    user_input1 = input('Enter a date (format: dd.mm.yyyy): ')
+    user_input1 = input('Enter a due date (format: dd.mm.yyyy): ')
     date_of_task = datetime.strptime(user_input1, '%d.%m.%Y')
     tracker.add_task(user_input, date_of_task)
 
