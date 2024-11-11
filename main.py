@@ -17,7 +17,8 @@ def add_to_dict(tracker):
     user_input = input('Enter a task: ')
     user_input1 = input('Enter a due date (format: dd.mm.yyyy): ')
     date_of_task = datetime.strptime(user_input1, '%d.%m.%Y')
-    tracker.add_task(user_input, date_of_task)
+    priority_level = input('Enter a priority level(high, medium, low): ')
+    tracker.add_task(user_input, date_of_task, priority_level)
 
 
 def get_tasks_from_dict(tracker):
@@ -53,7 +54,7 @@ def unmark_task_done(tracker, task):
 def loop(tracker):
     try:
         while True:
-            print("Options: add, get, remove, mark done, unmark done, sort task: todo, done, all")
+            print("Options: add, get, remove, mark done, unmark done, get priority, sort task: todo, done, all")
             user_input = input("What task do you want to perform?: ").lower().strip()
 
             if user_input == 'add':
@@ -75,6 +76,14 @@ def loop(tracker):
                 sort_dict(tracker.get_tasks_done(), asc=True)
             elif user_input == "sort all":
                 sort_dict(tracker.get_all_tasks(), asc=True)
+            elif user_input == "get priority":
+                user_input = input("What priority level(high, medium, low): ")
+                if user_input == 'high':
+                    print(tracker.get_tasks_high_priority())
+                elif user_input == 'medium':
+                    print(tracker.get_tasks_medium_priority())
+                elif user_input == 'low':
+                    print(tracker.get_tasks_low_priority())
             else:
                 print("Invalid Input, please try again.")
     except KeyboardInterrupt:
