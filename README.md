@@ -3,7 +3,7 @@
 
 # Task Tracker
 
-Task Tracker is a simple Python program to manage your to-do tasks. It allows you to add, remove, and mark tasks as done. You can also view tasks and sort them by their due date.
+Task Tracker is a simple Python program to manage your to-do tasks. It allows you to add, remove, and mark tasks as done. You can also view tasks and sort them by their due date. More features may be added in the future.
 
 ## Features
 
@@ -12,7 +12,8 @@ Task Tracker is a simple Python program to manage your to-do tasks. It allows yo
 - **Mark Task as Done**: Move a task from the to-do list to the done list.
 - **Unmark Task**: Move a task from the done list back to the to-do list.
 - **View Tasks**: View tasks in your to-do, done, or all task lists.
-- **Sort Tasks**: Sort tasks by their due date in ascending order for the to-do, done, or all lists.
+- **Sort Tasks**: Sort tasks by their due date or priority in ascending order for the to-do, done, or all lists.
+- More Features may be added
 
 ## Requirements
 
@@ -66,11 +67,8 @@ The project consists of the following files:
 Options: add, get, remove, mark done, unmark done, sort task: todo, done, all
 What task do you want to perform?: add
 Enter a task: Buy groceries
+Enter a priority: high
 Enter a date (format: dd.mm.yyyy): 15.11.2024
-
-Options: add, get, remove, mark done, unmark done, sort task: todo, done, all
-What task do you want to perform?: get
-Buy groceries - 15.11.2024
 ```
 
 ## Troubleshooting
