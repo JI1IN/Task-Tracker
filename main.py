@@ -102,7 +102,7 @@ def loop(tracker):
                     continue
 
     except KeyboardInterrupt:
-        print("User cancelled.")
+        print("\nUser cancelled.")
     except ValueError:
         print("Invalid Input, please try again.")
 

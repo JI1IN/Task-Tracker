@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Task Tracker</title>
+    <link rel="stylesheet" href="../static/styles.css">
+</head>
+<body>
+    <h1>Task Tracker</h1>
+
+    <!-- Form to Add a Task -->
+    <h2>Add Task</h2>
+    <form id="task-form">
+        <input type="text" id="task" placeholder="Enter a task" required>
+        <input type="text" id="date" placeholder="Due date (dd.mm.yyyy)" required>
+        <input type="text" id="priority" placeholder="Priority (high, medium, low)" required>
+        <button type="submit">Add Task</button>
+    </form>
+
+    <!-- Section to Display Tasks -->
+    <h2>Tasks</h2>
+    <ul id="task-list"></ul>
+
+    <!-- Section to Mark Task Done -->
+    <h2>Mark Task Done</h2>
+    <input type="text" id="mark-task" placeholder="Task to mark as done">
+    <button id="mark-done-btn">Mark Done</button>
+
+    <!-- Section to Remove Task -->
+    <h2>Remove Task</h2>
+    <input type="text" id="remove-task" placeholder="Task to remove">
+    <button id="remove-task-btn">Remove Task</button>
+
+    <script src="../static/script.js"></script>
+</body>
+</html>
