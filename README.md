@@ -12,7 +12,7 @@ Task Tracker is a simple Python program to manage your to-do tasks. It allows yo
 - **Mark Task as Done**: Move a task from the to-do list to the done list.
 - **Unmark Task**: Move a task from the done list back to the to-do list.
 - **View Tasks**: View tasks in your to-do, done, or all task lists.
-- **Sort Tasks**: Sort tasks by their due date or priority in ascending order for the to-do, done, or all lists.
+- **Sort Tasks**: Sort tasks by their due date
 - More Features may be added
 
 ## Requirements
