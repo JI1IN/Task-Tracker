@@ -53,7 +53,8 @@ The project consists of the following files:
 3. **Access the Application**:
 
     Open your web browser and navigate to [http://127.0.0.1:5000/](http://127.0.0.1:5000/) to access the app.
-    Update (14.11.2024): As of now, routing hasn't been implemented
+
+   Update (14.11.2024): As of now, routing hasn't been implemented
 
 5. **Interacting with the App**:
 
