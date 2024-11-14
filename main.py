@@ -71,36 +71,36 @@ def loop(tracker):
                   " get priority, sort task, get tasks: todo, done, all")
             user_input = input("What task do you want to perform?: ").lower().strip()
 
-            if user_input == 'add':
-                add_to_dict(tracker)
-            elif user_input == 'get':
-                get_tasks_from_dict(tracker)
-            elif user_input == 'remove':
-                task = input("What task do you want to remove?: ")
-                remove_task_from_dict(tracker, task)
-            elif user_input == 'mark done':
-                task = input("What task do you want to mark as done?: ")
-                mark_task_done(tracker, task)
-            elif user_input == 'unmark done':
-                task = input("What task do you want to unmark as done?: ")
-                unmark_task_done(tracker, task)
-            elif user_input == "sort todo":
-                sort_dict(tracker.get_tasks_not_done(), asc=True)
-            elif user_input == "sort done":
-                sort_dict(tracker.get_tasks_done(), asc=True)
-            elif user_input == "sort all":
-                sort_dict(tracker.get_all_tasks(), asc=True)
-            elif user_input == "get priority":
-                user_input = input("What priority level(high, medium, low): ")
-                if user_input == 'high':
-                    print(tracker.get_tasks_high_priority())
-                elif user_input == 'medium':
-                    print(tracker.get_tasks_medium_priority())
-                elif user_input == 'low':
-                    print(tracker.get_tasks_low_priority())
-            else:
-                print("Invalid Input, please try again.")
-                continue
+            match user_input:
+                case "add":
+                    add_to_dict(tracker)
+                case "get":
+                    get_tasks_from_dict(tracker)
+                case "remove":
+                    remove_task_from_dict(tracker, user_input)
+                case "mark done":
+                    user_input = input("What task do you want to mark as done?: ")
+                    mark_task_done(tracker, user_input)
+                case "unmark done":
+                    user_input = input("What task do you want to unmark as done?: ")
+                    unmark_task_done(tracker, user_input)
+                case "get priority":
+                    user_input = input('Enter a priority level(high, medium, low): ')
+                    match user_input:
+                        case "high":
+                            print(tracker.get_tasks_high_priority())
+                        case "medium":
+                            print(tracker.get_tasks_med_priority())
+                        case "low":
+                            print(tracker.get_tasks_low_priority())
+                case "sort task":
+                    sort_dict(tracker)
+                case "get tasks":
+                    get_tasks_from_dict(tracker)
+                case _:
+                    print("Invalid input, try again")
+                    continue
+
     except KeyboardInterrupt:
         print("User cancelled.")
     except ValueError:
