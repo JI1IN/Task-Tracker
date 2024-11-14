@@ -58,7 +58,7 @@ class TaskTracker:
     def get_tasks_low_priority(self):
         dict_low = {}
         for task, attributes in self.tasks_not_done.items():
-            if attributes["priority"] == "medium":
+            if attributes["priority"] == "low":
                 dict_low[task] = attributes
         return dict_low
 

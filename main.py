@@ -9,7 +9,19 @@ def sort_dict(tasks, asc=True):
     if not tasks:
         print("No tasks to sort.")
         return
-    sorted_tasks = pd.Series(tasks).sort_values(ascending=asc)
+
+    # Convert the tasks dictionary into a pandas Series
+    task_series = pd.Series(tasks)
+
+    # Create a new Series of dates by applying the lambda function
+    task_dates = task_series.apply(lambda x: x['date'])
+
+    # Sort the tasks based on the extracted dates
+    sorted_task_dates = task_dates.sort_values(ascending=asc)
+
+    # Get the tasks sorted by the date
+    sorted_tasks = task_series[sorted_task_dates.index]
+
     print(sorted_tasks)
 
 
@@ -23,7 +35,8 @@ def add_to_dict(tracker):
 
 def get_tasks_from_dict(tracker):
     all_tasks = tracker.get_all_tasks()
-    for task, date in all_tasks.items():
+    for task, attributes in all_tasks.items():
+        date = attributes['date']
         print(f'{task} - {date.strftime("%d.%m.%Y")}')
 
 
@@ -54,7 +67,8 @@ def unmark_task_done(tracker, task):
 def loop(tracker):
     try:
         while True:
-            print("Options: add, get, remove, mark done, unmark done, get priority, sort task: todo, done, all")
+            print("Options: add, get, remove, mark done, unmark done,"
+                  " get priority, sort task, get tasks: todo, done, all")
             user_input = input("What task do you want to perform?: ").lower().strip()
 
             if user_input == 'add':
@@ -86,6 +100,7 @@ def loop(tracker):
                     print(tracker.get_tasks_low_priority())
             else:
                 print("Invalid Input, please try again.")
+                continue
     except KeyboardInterrupt:
         print("User cancelled.")
     except ValueError:
