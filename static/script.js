@@ -52,5 +52,3 @@ function toggleTaskDone(taskName, isDone) {
     })
 }
 
-// Load tasks on page load
-document.addEventListener('DOMContentLoaded', loadTasks);
