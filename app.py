@@ -6,7 +6,7 @@ app = Flask(__name__)
 
 class TaskTracker:
     def __init__(self):
-        self.tasks = []  # List to store tasks
+        self.tasks = []
 
     def add_task(self, name, due_date, priority):
         self.tasks.append({
@@ -22,7 +22,7 @@ class TaskTracker:
     def update_task_status(self, task_name, done):
         for task in self.tasks:
             if task['name'] == task_name:
-                task['done'] = done  # Update the task's done status
+                task['done'] = done
                 break
 
 tracker = TaskTracker()
@@ -43,12 +43,18 @@ def contact():
     return render_template('contact.html')
 
 
+@app.route('/task-tracker')
+def tasks_tracker():
+    return render_template('app.html')
+
+
 @app.route('/add_task', methods=['POST'])
 def add_task():
     task = request.json.get('task')
     date_str = request.json.get('date')
     priority = request.json.get('priority')
     date_of_task = datetime.strptime(date_str, '%d.%m.%Y')
+    print(f"Tracker object: {tracker}")
     tracker.add_task(task, date_of_task, priority)
     return jsonify(success=True)
 
@@ -65,6 +71,5 @@ def update_task_status():
     done = request.json.get('done')
     tracker.update_task_status(task, done)
     return jsonify(success=True)
-
 if __name__ == '__main__':
     app.run(debug=True)

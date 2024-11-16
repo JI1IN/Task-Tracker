@@ -17,7 +17,7 @@ document.getElementById('task-form').addEventListener('submit', function(event) 
     }).then(response => response.json())
       .then(data => {
           if (data.success) {
-              loadTasks(); // Reload tasks after adding
+              loadTasks();
           }
       });
 });
@@ -27,7 +27,7 @@ function loadTasks() {
         .then(response => response.json())
         .then(tasks => {
             const taskList = document.getElementById('task-list');
-            taskList.innerHTML = ''; // Clear existing tasks
+            taskList.innerHTML = '';
             tasks.forEach(task => {
                 const li = document.createElement('li');
                 li.innerHTML = `

@@ -4,8 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="author" content="Jason Chen">
-    <meta name="description" content="A simplistic task-tracker to keep all your tasks in check.">
-    <title>Task Tracker - Home</title>
+    <meta name="description" content="Manage your tasks and keep track of deadlines.">
+    <title>Task Tracker - Tracker</title>
     <link rel="stylesheet" href="../static/css/styles.css">
     <link rel="stylesheet" href="../static/css/footer.css">
     <link rel="stylesheet" href="../static/css/nav.css">
@@ -28,10 +28,24 @@
     </nav>
 
     <div class="content">
-        <h1>Welcome to Task Tracker</h1>
-        <p>A simple tool to help you track your tasks, manage deadlines, and stay on top of your to-dos.</p>
-        <p>Click below to start adding your tasks:</p>
-        <a href="/task-tracker" class="btn">Go to Task Tracker</a>
+        <h1>Task Tracker</h1>
+        <div class="task-container">
+            <div class="task-form">
+                <h2>Add Task</h2>
+                <form id="task-form">
+                    <input type="text" id="task" placeholder="Enter a task" required>
+                    <input type="text" id="date" placeholder="Due date (dd.mm.yyyy)" required>
+                    <input type="text" id="priority" placeholder="Priority (high, medium, low)" required>
+                    <button type="submit">Add Task</button>
+                </form>
+            </div>
+
+            <div class="task-list-container">
+                <h2>Your Tasks</h2>
+                <p>Your tasks will be displayed here:</p>
+                <ul id="task-list"></ul>
+            </div>
+        </div>
     </div>
 
     <footer class='site-footer'>
