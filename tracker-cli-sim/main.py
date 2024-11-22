@@ -2,26 +2,16 @@ from datetime import datetime
 import pandas as pd
 from TaskTracker import TaskTracker
 
-# Add priority for tasks, add simple GUI using Tkinter later
-
 
 def sort_dict(tasks, asc=True):
     if not tasks:
         print("No tasks to sort.")
         return
 
-    # Convert the tasks dictionary into a pandas Series
     task_series = pd.Series(tasks)
-
-    # Create a new Series of dates by applying the lambda function
     task_dates = task_series.apply(lambda x: x['date'])
-
-    # Sort the tasks based on the extracted dates
     sorted_task_dates = task_dates.sort_values(ascending=asc)
-
-    # Get the tasks sorted by the date
     sorted_tasks = task_series[sorted_task_dates.index]
-
     print(sorted_tasks)
 
 

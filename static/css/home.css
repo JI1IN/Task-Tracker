@@ -1,0 +1,22 @@
+header{
+    background-color: #45a049;
+    min-height: 60vh;
+}
+
+
+#home-header {
+    text-align: left;
+    padding: 100px;
+    font-weight: bolder;
+    font-size: 8vw;
+}
+@media (max-width: 768px) {
+    #home-header {
+        text-align: left;
+        font-size: 9vw;
+    }
+    header{
+        padding: 0;
+    }
+}
+

@@ -49,6 +49,16 @@ def tasks_tracker():
     return render_template('app.html')
 
 
+@app.route('/about')
+def about():
+    return render_template('about.html')
+
+
+@app.route('/contact')
+def contact():
+    return render_template('contact.html')
+
+
 @app.route('/add_list', methods=['POST'])
 def add_list():
     list_title = request.json.get('title')
