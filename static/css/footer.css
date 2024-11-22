@@ -1,7 +1,7 @@
 
 .site-footer {
-    background-color: #000000;
-    color: white;
+    background-color: #001F3F;
+    color: #EAD8B1;
     padding: 20px;
     font-size: 14px;
     text-align: left;
@@ -15,7 +15,7 @@
 
 .site-footer h2,
 .site-footer h3 {
-    color: #f8f8f8;
+    color: #EAD8B1;
     margin-bottom: 10px;
 }
 
@@ -24,7 +24,7 @@
 }
 
 .site-footer a {
-    color: #f8f8f8;
+    color: #EAD8B1;
     text-decoration: none;
 }
 

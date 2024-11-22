@@ -24,7 +24,7 @@ input, select {
 }
 
 button {
-    background-color: #4CAF50;
+    background-color: #3A6D8C;
     color: white;
     border: none;
     padding: 10px 15px;
@@ -34,7 +34,7 @@ button {
 }
 
 button:hover {
-    background-color: #45a049;
+    background-color: #3A6D8C;
 }
 
 ul {
@@ -122,7 +122,7 @@ ul {
 
 #todo-list li strong {
     font-size: 18px;
-    color: #4CAF50;
+    color: #3A6D8C ;
 }
 
 @media (max-width: 1024px) {
@@ -178,7 +178,7 @@ ul {
 }
 
 .expand-btn {
-    background-color: #4CAF50;
+    background-color: #3A6D8C ;
     color: white;
     border: none;
     padding: 5px 10px;
@@ -188,7 +188,7 @@ ul {
 }
 
 .expand-btn:hover {
-    background-color: #45a049;
+    background-color: #3A6D8C ;
 }
 
 .expand-btn:focus {
@@ -217,3 +217,5 @@ ul {
 .task-list-container {
     margin-top: 20px;
 }
+
+

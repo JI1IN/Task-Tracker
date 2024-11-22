@@ -1,0 +1,5 @@
+- Color Schemes:
+#001F3F //Navy
+#3A6D8C //darker blue
+#6A9AB0 //lighter blue
+#EAD8B1 //beige
