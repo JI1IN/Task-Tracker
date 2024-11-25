@@ -11,11 +11,19 @@
     <link rel="stylesheet" href="../static/css/footer.css">
     <link rel="stylesheet" href="../static/css/nav.css">
     <link rel="icon" href="../static/imgs/logo.png" type="image/x-icon">
+
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fullPage.js/3.1.2/fullpage.min.css">
+
+    <style>
+
+    </style>
 </head>
 <body>
+
     <nav class="navbar">
         <div class="container">
-            <a href="/" class="logo " style="color: black">Task-Master</a>
+            <a href="/" class="logo" style="color: black">Task-Master</a>
             <div class="nav-links" id="nav-links">
                 <ul>
                     <li><a href="/">Home</a></li>
@@ -28,23 +36,60 @@
         </div>
     </nav>
 
-    <header id="home-header">
-        Welcome<br>
-        to Task-Master
-    </header>
-    <main>
-        akjsdhfkjlasdhjkasjkf
-        sadjkfbkjasdhfjkasljkhfkas#sadfhj
-        sadkjfhsakdjhfjkhasdkjfka
-        asdjkfhkjasdhfjkasdlkjfd
-        askjdhflksadhjklfsadhfklslfh
-        asdkfhsdajkfhlkjs
-    </main>
-     <footer class="site-footer">
+    <div id="fullpage">
+
+        <div class="section">
+            <header id="home-header">
+                Welcome<br>
+                to Task-Master
+            </header>
+        </div>
+
+        <div class="section section1">
+            <p>akjsdhfkjlasdhjkasjkf<br>
+            sadjkfbkjasdhfjkasljkhfkas#sadfhj<br>
+            sadkjfhsakdjhfjkhasdkjfka<br>
+            asdjkfhkjasdhfjkasdlkjfd<br>
+            askjdhflksadhjklfsadhfklslfh<br>
+            asdkfhsdajkfhlkjs</p>
+        </div>
+
+        <div class="section section2">
+            <p>akjsdhfkjlasdhjkasjkf<br>
+            sadjkfbkjasdhfjkasljkhfkas#sadfhj<br>
+            sadkjfhsakdjhfjkhasdkjfka<br>
+            asdjkfhkjasdhfjkasdlkjfd<br>
+            askjdhflksadhjklfsadhfklslfh<br>
+            asdkfhsdajkfhlkjs</p>
+        </div>
+
+        <div class="section section3">
+            <p>akjsdhfkjlasdhjkasjkf<br>
+            sadjkfbkjasdhfjkasljkhfkas#sadfhj<br>
+            sadkjfhsakdjhfjkhasdkjfka<br>
+            asdjkfhkjasdhfjkasdlkjfd<br>
+            askjdhflksadhjklfsadhfklslfh<br>
+            asdkfhsdajkfhlkjs</p>
+        </div>
+    </div>
+
+    <footer class="site-footer">
         <div class="footer-content">
             <p>&copy; 2024 Jason Chen. All rights reserved.</p>
         </div>
     </footer>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fullPage.js/3.1.2/fullpage.min.js"></script>
+    <script>
+        new fullpage('#fullpage', {
+            autoScrolling: true,
+            navigation: true,
+            scrollHorizontally: true,
+            anchors: ['home', 'section1', 'section2', 'section3'],
+            showActiveTooltip: true,
+            loopBottom: true
+        });
+    </script>
 
     <script src="../static/script.js"></script>
     <script src="../static/nav.js"></script>
