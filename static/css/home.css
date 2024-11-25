@@ -1,15 +1,16 @@
-
 main {
     min-height: 100vh;
     padding: 20px;
     flex-grow: 1;
 }
+
 .section {
     display: flex;
     justify-content: center;
     align-items: center;
     text-align: center;
 }
+
 header {
     display: flex;
     justify-content: flex-start;
@@ -20,7 +21,8 @@ header {
     font-weight: bolder;
     padding-left: 20px;
     box-sizing: border-box;
-    background-color: #3A6D8C;
+    background-color: #1976D2; /* Blue for header background */
+    color: white; /* White text on blue background */
 }
 
 .section1, .section2, .section3 {
@@ -28,21 +30,22 @@ header {
 }
 
 .section1 {
-    background-color: #EAD8B1;
+    background-color: #F5F5F5; /* Light Grey for section1 */
 }
 
 .section2 {
-    background-color: #3A6D8C;
+    background-color: #4682B4; /* Steelblue for section2 */
 }
 
 .section3 {
-    background-color: aliceblue;
+    background-color: #E0F2F1; /* Light Teal (Very Light Green-Blue) for section3 */
 }
- @media (max-width: 768px) {
-     header {
-         font-size: 9vw;
-     }
- }
+
+@media (max-width: 768px) {
+    header {
+        font-size: 9vw;
+    }
+}
 
 @media (max-width: 480px) {
     header {
@@ -51,8 +54,8 @@ header {
 }
 
 .site-footer {
-    background-color: #333;
-    color: #fff;
+    background-color: #212121; /* Charcoal Grey for footer background */
+    color: white; /* White text on grey footer */
     padding: 20px;
     text-align: center;
 }
@@ -62,4 +65,5 @@ header {
     padding: 100px;
     font-weight: bolder;
     font-size: 8vw;
+    color: #212121; /* Charcoal Grey for home header text */
 }

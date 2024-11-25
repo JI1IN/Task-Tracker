@@ -1,7 +1,5 @@
-
-
 .navbar {
-    background-color: #EAD8B1;
+    background-color: #F5F5F5; /* Light Grey for navbar background */
     padding: 10px 20px;
     position: sticky;
     top: 0;
@@ -19,6 +17,7 @@
     text-decoration: none;
     font-size: 24px;
     font-weight: bold;
+    color: #212121; /* Charcoal Grey for logo text */
 }
 
 .nav-links {
@@ -33,20 +32,20 @@
 }
 
 .nav-links a {
-    color: black;
+    color: #212121; /* Charcoal Grey for regular links */
     text-decoration: none;
     transition: color 0.3s;
 }
 
 .nav-links a:hover {
-    color: #6A9AB0 ;
+    color: #1976D2; /* Blue for hover effect */
 }
 
 .hamburger {
     display: none;
     background: none;
     border: none;
-    color: white;
+    color: #212121; /* Charcoal Grey for hamburger icon */
     font-size: 24px;
 }
 
@@ -57,7 +56,7 @@
         position: absolute;
         top: 60px;
         right: 0;
-        background-color: #EAD8B1;
+        background-color: #F5F5F5; /* Light Grey for mobile navbar background */
         width: 100%;
         z-index: 1000;
     }
@@ -65,7 +64,12 @@
     .nav-links.active {
         display: flex;
     }
+
     .hamburger {
         display: block;
+    }
+
+    .hamburger:focus {
+        outline: none;
     }
 }

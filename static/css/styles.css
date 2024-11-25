@@ -8,7 +8,7 @@ body {
 }
 
 h1, h2 {
-    color: #333;
+    color: #212121; /* Charcoal Grey for headings */
 }
 
 form {
@@ -18,13 +18,13 @@ form {
 input, select {
     padding: 10px;
     margin-right: 10px;
-    border: 1px solid #ddd;
+    border: 1px solid #ddd; /* Light Grey for borders */
     border-radius: 4px;
     font-size: 14px;
 }
 
 button {
-    background-color: #3A6D8C;
+    background-color: #4682B4; /* Steel Blue for action buttons */
     color: white;
     border: none;
     padding: 10px 15px;
@@ -34,7 +34,7 @@ button {
 }
 
 button:hover {
-    background-color: #3A6D8C;
+    background-color: #5A9BD5; /* Lighter Steel Blue for hover */
 }
 
 ul {
@@ -56,11 +56,11 @@ ul {
     background-color: white;
     border-radius: 8px;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-
 }
 
 .task-form h2 {
     margin-bottom: 10px;
+    color: #212121; /* Charcoal Grey for the form header */
 }
 
 .list-form {
@@ -74,13 +74,14 @@ ul {
 
 .list-form h2 {
     margin-bottom: 10px;
+    color: #212121; /* Charcoal Grey for the form header */
 }
 
 .task-list-container {
     flex: 2;
     max-height: 250px;
     overflow-y: auto;
-    border-left: 2px solid #ddd;
+    border-left: 2px solid #ddd; /* Light Grey border */
     padding-left: 20px;
     background-color: white;
     border-radius: 8px;
@@ -93,7 +94,7 @@ ul {
 
 #task-list li {
     padding: 10px;
-    border-bottom: 1px solid #ddd;
+    border-bottom: 1px solid #ddd; /* Light Grey border for list items */
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -114,7 +115,7 @@ ul {
 #todo-list li {
     margin: 10px 0;
     font-size: 16px;
-    color: #333;
+    color: #212121; /* Charcoal Grey for text */
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -122,7 +123,7 @@ ul {
 
 #todo-list li strong {
     font-size: 18px;
-    color: #3A6D8C ;
+    color: #4682B4; /* Steel Blue for strong text */
 }
 
 @media (max-width: 1024px) {
@@ -151,7 +152,7 @@ ul {
         width: 100%;
         max-height: none;
         border-left: none;
-        border-top: 2px solid #ddd;
+        border-top: 2px solid #ddd; /* Light Grey border for top */
     }
 
     #task-list {
@@ -167,7 +168,7 @@ ul {
 
 .task-list li {
     padding: 5px 0;
-    border-bottom: 1px solid #ddd;
+    border-bottom: 1px solid #ddd; /* Light Grey border */
 }
 
 .list-header {
@@ -178,7 +179,7 @@ ul {
 }
 
 .expand-btn {
-    background-color: #3A6D8C ;
+    background-color: #4682B4; /* Steel Blue for expand buttons */
     color: white;
     border: none;
     padding: 5px 10px;
@@ -188,7 +189,7 @@ ul {
 }
 
 .expand-btn:hover {
-    background-color: #3A6D8C ;
+    background-color: #5A9BD5; /* Lighter Steel Blue for hover */
 }
 
 .expand-btn:focus {
@@ -198,9 +199,9 @@ ul {
 .task-list li {
     padding: 10px 15px;
     margin-bottom: 8px;
-    border: 1px solid #ddd;
-    border-radius: 5px; /
-    background-color: #f9f9f9;
+    border: 1px solid #ddd; /* Light Grey border for task items */
+    border-radius: 5px;
+    background-color: #f9f9f9; /* Very Light Grey background for task items */
     font-size: 16px;
 }
 
@@ -210,12 +211,10 @@ ul {
 }
 
 .task-list li input[type="checkbox"]:checked {
-    background-color: #c9e4c5;
-    text-decoration: line-through;
+    background-color: #c9e4c5; /* Light Green for checked tasks */
+    text-decoration: line-through; /* Strikethrough for completed tasks */
 }
 
 .task-list-container {
     margin-top: 20px;
 }
-
-

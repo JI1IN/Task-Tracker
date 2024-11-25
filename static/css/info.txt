@@ -1,5 +1,6 @@
 - Color Schemes:
-#001F3F //Navy
-#3A6D8C //darker blue
-#6A9AB0 //lighter blue
-#EAD8B1 //beige
+#4682B4(Steelblue) For Focus/Action -> intends completed tasks/positive progress
+#1976D2 (Blue) For accents -> use for buttons, links, navigation elements
+#F5F5F5 (Light Grey) Acts as neutral base -> background color
+#212121 (Charcoal Grey/Black) Acts as text color
+Using monotone, simple colors makes the design more professional and easier to the eyes
