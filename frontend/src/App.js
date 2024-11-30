@@ -14,19 +14,30 @@ function App() {
     return (
         <Router>
             <div>
-                <nav>
-                    <ul>
-                        <li><a href='/'>Home</a></li>
-                        <li><a href='/task-tracker'>Task Tracker</a></li>
-                        <li><a href="/about">About</a></li>
-                        <li><a href="/contact">Contact</a></li>
-                    </ul>
+                <nav className="navbar">
+                    <div className="container">
+                        <a href="/" className="logo">Task-Master</a>
+                        <div className="nav-links" id="nav-links">
+                            <ul>
+                                <li><a href="/">Home</a></li>
+                                <li><a href="/about">About</a></li>
+                                <li><a href="/task-tracker">Tracker</a></li>
+                                <li><a href="/contact">Contact</a></li>
+                            </ul>
+                        </div>
+                        <button className="hamburger" id="hamburger">☰</button>
+                    </div>
                 </nav>
+                <footer className="site-footer">
+                    <div className="footer-content text-center">
+                        <p>&copy; 2024 Jason Chen. All rights reserved.</p>
+                    </div>
+                </footer>
                 <Routes>
-                    <Route path="/" element={<Home />} />
-                    <Route path="/task-tracker" element={<TaskTracker />} />
-                    <Route path="/about" element={<About />} />
-                    <Route path="/contact" element={<Contact />} />
+                    <Route path="/" element={<Home/>}/>
+                    <Route path="/task-tracker" element={<TaskTracker/>}/>
+                    <Route path="/about" element={<About/>}/>
+                    <Route path="/contact" element={<Contact/>}/>
                 </Routes>
             </div>
         </Router>

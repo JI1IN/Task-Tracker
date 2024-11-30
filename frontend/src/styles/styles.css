@@ -5,27 +5,157 @@ body {
     background-color: #f4f4f4;
 }
 
-nav {
-    background: #333;
-    color: #fff;
+
+.navbar {
+    background-color: #F5F5F5; /* Light Grey for navbar background */
+    padding: 10px 20px;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+}
+
+.container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex: 1;
+}
+
+.logo {
+    text-decoration: none;
+    font-size: 24px;
+    font-weight: bold;
+    color: #212121; /* Charcoal Grey for logo text */
+}
+
+.nav-links {
+    list-style: none;
+    padding: 0;
+    display: flex;
+}
+
+.nav-links li {
+    display: inline;
+    margin-left: 20px;
+}
+
+.nav-links a {
+    color: #212121;
+    text-decoration: none;
+    transition: color 0.3s;
+}
+
+.nav-links a:hover {
+    color: #1976D2;
+}
+
+.hamburger {
+    display: none;
+    background: none;
+    border: none;
+    color: #212121;
+    font-size: 24px;
+}
+
+@media (max-width: 768px) {
+    .nav-links {
+        display: none;
+        flex-direction: column;
+        position: absolute;
+        top: 60px;
+        right: 0;
+        background-color: #F5F5F5;
+        width: 100%;
+        z-index: 1000;
+    }
+
+    .nav-links.active {
+        display: flex;
+    }
+
+    .hamburger {
+        display: block;
+    }
+
+    .hamburger:focus {
+        outline: none;
+    }
+}
+
+
+h1 {
+    color: #333;
+}
+
+.site-footer {
+    background-color: #212121;
+    color: #E0F2F1;
+    padding: 20px;
+    font-size: 14px;
+    text-align: left;
+    position: fixed;
+    left: 0;
+    width: 100%;
+    bottom: 0;
+    flex-shrink: 0;
+    margin-top: 100px;
+}
+
+.site-footer h2,
+.site-footer h3 {
+    color: #E0F2F1;
+    margin-bottom: 10px;
+}
+
+.site-footer p {
+    margin: 5px 0;
+}
+
+.site-footer a {
+    color: #E0F2F1;
+    text-decoration: none;
+}
+
+.site-footer a:hover {
+    text-decoration: underline;
+    color: #1976D2;
+}
+
+.footer-content {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+}
+
+.footer-left,
+.footer-center,
+.footer-right {
+    flex: 1;
     padding: 10px;
 }
 
-nav ul {
+.footer-center ul {
     list-style: none;
     padding: 0;
 }
 
-nav ul li {
-    display: inline;
-    margin-right: 20px;
+.footer-center li {
+    margin: 5px 0;
 }
 
-nav ul li a {
-    color: #fff;
-    text-decoration: none;
+.social-icons a {
+    margin-right: 15px;
+    color: #E0F2F1;
 }
 
-h1 {
-    color: #333;
+.social-icons a:hover {
+    color: #1976D2;
+}
+
+.footer-bottom {
+    text-align: center;
+    margin-top: 20px;
+    border-top: 1px solid #555;
+    padding-top: 10px;
+    color: #E0F2F1;
 }
