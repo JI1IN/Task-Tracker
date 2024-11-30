@@ -5,10 +5,10 @@ function Home() {
     return (
         <div>
          <div className="section">
-            <header id="home-header">
+            <div className='header' id="home-header">
                 Welcome<br />
                 to Task-Master
-            </header>
+            </div>
         </div>
 
         <div className="section section1">

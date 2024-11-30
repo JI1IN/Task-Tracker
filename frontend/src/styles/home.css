@@ -11,7 +11,7 @@ main {
     text-align: center;
 }
 
-header {
+.header {
     display: flex;
     justify-content: flex-start;
     align-items: center;

@@ -1,52 +1,84 @@
 body {
-    font-family: Arial, sans-serif;
     margin: 0;
-    padding: 0;
-    background-color: #f4f4f4;
+    height: 100%;
+    font-family: 'Roboto', sans-serif;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    background-color: #f4f7fc;
+}
+header {
+    display: flex;
+    flex-direction: column;
+    padding: 20px;
+}
+h1 {
+    font-size: 2rem;
+    color: #333;
+    margin: 20px 0;
 }
 
+button {
+    background-color: #4682B4;
+    color: white;
+    border: none;
+    padding: 12px;
+    cursor: pointer;
+    border-radius: 4px;
+    font-size: 14px;
+    transition: background-color 0.3s;
+}
 
+button:hover {
+    background-color: #5A9BD5;
+}
+
+/* Navbar Styles */
 .navbar {
-    background-color: #F5F5F5; /* Light Grey for navbar background */
-    padding: 10px 20px;
+    background-color: #FFFFFF; /* White background */
+    padding: 15px 30px; /* Increased padding for more space */
     position: sticky;
     top: 0;
     z-index: 1000;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Optional light shadow for a cleaner look */
 }
 
 .container {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    flex: 1;
+    width: 100%;
 }
 
 .logo {
     text-decoration: none;
     font-size: 24px;
     font-weight: bold;
-    color: #212121; /* Charcoal Grey for logo text */
+    color: #212121; /* Dark color for the logo */
 }
 
 .nav-links {
+    display: flex;
+    gap: 40px; /* Increased gap between navbar items */
     list-style: none;
     padding: 0;
-    display: flex;
 }
 
 .nav-links li {
-    display: inline;
-    margin-left: 20px;
+    display: inline-block;
 }
 
 .nav-links a {
-    color: #212121;
+    color: #212121; /* Dark color for text */
     text-decoration: none;
     transition: color 0.3s;
+    padding: 10px 15px; /* Added padding to each link for better spacing */
+    border-radius: 4px; /* Rounded corners for a cleaner look */
 }
 
 .nav-links a:hover {
-    color: #1976D2;
+    color: #1976D2; /* Change color on hover */
+    background-color: #f1f1f1; /* Light background on hover */
 }
 
 .hamburger {
@@ -54,7 +86,8 @@ body {
     background: none;
     border: none;
     color: #212121;
-    font-size: 24px;
+    font-size: 30px;
+    cursor: pointer;
 }
 
 @media (max-width: 768px) {
@@ -64,7 +97,7 @@ body {
         position: absolute;
         top: 60px;
         right: 0;
-        background-color: #F5F5F5;
+        background-color: #FFFFFF; /* White background for mobile menu */
         width: 100%;
         z-index: 1000;
     }
@@ -76,17 +109,9 @@ body {
     .hamburger {
         display: block;
     }
-
-    .hamburger:focus {
-        outline: none;
-    }
 }
 
-
-h1 {
-    color: #333;
-}
-
+/* Footer Styles */
 .site-footer {
     background-color: #212121;
     color: #E0F2F1;
@@ -97,7 +122,6 @@ h1 {
     left: 0;
     width: 100%;
     bottom: 0;
-    flex-shrink: 0;
     margin-top: 100px;
 }
 

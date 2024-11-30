@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import '../styles/tasktracker.css';
 import axios from 'axios';
 
 function TaskTracker() {
@@ -16,7 +17,7 @@ function TaskTracker() {
     const loadTodoLists = async () => {
         try {
             const response = await axios.get('/api/get_lists');
-            console.log("Loaded Lists: ", response.data);  // Log the data received
+            console.log("Loaded Lists: ", response.data);
             setLists(response.data);
         } catch (error) {
             console.error('Error loading todo lists:', error);
@@ -30,7 +31,7 @@ function TaskTracker() {
         try {
             await axios.post('/api/add_list', { title: newListTitle });
             setNewListTitle('');
-            loadTodoLists(); // Reload lists after adding a new one
+            loadTodoLists();
         } catch (error) {
             console.error('Error adding list:', error);
         }
@@ -40,17 +41,16 @@ function TaskTracker() {
         event.preventDefault();
         if (!newTask || !selectedList || !taskDueDate) return;
 
-        // Convert the date from YYYY-MM-DD (default date input format) to DD.MM.YYYY
         const formattedDate = new Date(taskDueDate)
-            .toLocaleDateString('en-GB')  // Get the date in DD/MM/YYYY format
-            .split('/')                  // Split the date by '/'
-            .reverse()                    // Reverse the array to get DD.MM.YYYY
-            .join('.');                   // Join with '.' separator
+            .toLocaleDateString('en-GB')
+            .split('/')
+            .reverse()
+            .join('.');
 
         try {
             const response = await axios.post('/api/add_task', {
                 task: newTask,
-                date: formattedDate, // Send the formatted date
+                date: formattedDate,
                 priority: taskPriority,
                 list_title: selectedList,
             });
@@ -58,7 +58,7 @@ function TaskTracker() {
             if (response.data.success) {
                 setNewTask('');
                 setTaskDueDate('');
-                loadTodoLists(); // Reload lists after adding a new task
+                loadTodoLists();
             } else {
                 console.error('Failed to add task');
             }
@@ -74,7 +74,7 @@ function TaskTracker() {
                 done: isDone,
                 list_title: listTitle,
             });
-            loadTodoLists(); // Reload tasks after updating status
+            loadTodoLists();
         } catch (error) {
             console.error('Error updating task status:', error);
         }
@@ -82,71 +82,82 @@ function TaskTracker() {
 
     return (
         <div>
-            <h1>Task Tracker</h1>
+            <header>
+                <h1>Task Tracker</h1>
+            </header>
 
-            {/* Add List Form */}
-            <form onSubmit={addList}>
-                <input
-                    type="text"
-                    value={newListTitle}
-                    onChange={(e) => setNewListTitle(e.target.value)}
-                    placeholder="New List Title"
-                />
-                <button type="submit">Add List</button>
-            </form>
+    <div className="task-container">
 
-            {/* List Selection */}
-            <select onChange={(e) => setSelectedList(e.target.value)} value={selectedList}>
-                <option value="">Select a list</option>
-                {lists.map((list) => (
-                    <option key={list.title} value={list.title}>
-                        {list.title}
-                    </option>
-                ))}
-            </select>
 
-            {/* Add Task Form */}
-            <form onSubmit={addTask}>
-                <input
-                    type="text"
-                    value={newTask}
-                    onChange={(e) => setNewTask(e.target.value)}
-                    placeholder="New Task"
-                />
-                <input
-                    type="date"
-                    value={taskDueDate}
-                    onChange={(e) => setTaskDueDate(e.target.value)}
-                />
-                <select value={taskPriority} onChange={(e) => setTaskPriority(e.target.value)}>
-                    <option value="high">High</option>
-                    <option value="medium">Medium</option>
-                    <option value="low">Low</option>
-                </select>
-                <button type="submit">Add Task</button>
-            </form>
+        <section className="form-section">
+                <form className="list-form" onSubmit={addList}>
+                    <input
+                        type="text"
+                        value={newListTitle}
+                        onChange={(e) => setNewListTitle(e.target.value)}
+                        placeholder="New List Title"
+                    />
+                    <button type="submit">Add List</button>
+                </form>
 
-            {/* Task List Display */}
-            <ul>
-                {lists.map((list) => (
-                    <li key={list.title}>
-                        <strong>{list.title}</strong>
-                        <ul>
-                            {list.tasks.map((task) => (
-                                <li key={task.name}>
-                                    <input
-                                        type="checkbox"
-                                        checked={task.done}
-                                        onChange={(e) => toggleTaskDone(list.title, task.name, e.target.checked)}
-                                    />
-                                    {task.name} - Due: {task.date} - Priority: {task.priority}
-                                </li>
-                            ))}
-                        </ul>
-                    </li>
-                ))}
-            </ul>
+                <form className="task-form" onSubmit={addTask}>
+                    <input
+                        type="text"
+                        value={newTask}
+                        onChange={(e) => setNewTask(e.target.value)}
+                        placeholder="New Task"
+                    />
+                    <input
+                        type="date"
+                        value={taskDueDate}
+                        onChange={(e) => setTaskDueDate(e.target.value)}
+                    />
+                    <select value={taskPriority} onChange={(e) => setTaskPriority(e.target.value)}>
+                        <option value="high">High</option>
+                        <option value="medium">Medium</option>
+                        <option value="low">Low</option>
+                    </select>
+
+                    <select onChange={(e) => setSelectedList(e.target.value)} value={selectedList}>
+                        <option value="">Select a list</option>
+                        {lists.map((list) => (
+                            <option key={list.title} value={list.title}>
+                                {list.title}
+                            </option>
+                        ))}
+                    </select>
+
+                    <button type="submit">Add Task</button>
+                </form>
+            </section>
+
+            <section className="task-list-section">
+                <div className="task-list-container">
+                    <ul className="task-list" id="task-list">
+                        {lists.map((list) => (
+                            <li key={list.title}>
+                                <div className="list-header">
+                                    <strong>{list.title}</strong>
+                                </div>
+                                <ul>
+                                    {list.tasks.map((task) => (
+                                        <li key={task.name}>
+                                            <input
+                                                type="checkbox"
+                                                checked={task.done}
+                                                onChange={(e) => toggleTaskDone(list.title, task.name, e.target.checked)}
+                                            />
+                                            {task.name} - Due: {task.date} - Priority: {task.priority}
+                                        </li>
+                                    ))}
+                                </ul>
+                            </li>
+                        ))}
+                    </ul>
+                </div>
+            </section>
         </div>
+ </div>
     );
 }
 
