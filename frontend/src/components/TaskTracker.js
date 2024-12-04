@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import '../styles/tasktracker.css';
+//import { title } from 'process';
 
 function TaskTracker() {
     const [lists, setLists] = useState([]);
@@ -108,6 +109,17 @@ function TaskTracker() {
         setSelectedTask(task);  // Open the task in subwindow
     };
 
+    const handleDelete = async (taskName, listTitle) => {
+        try {
+            console.log(taskName);
+            console.log(listTitle);
+            await axios.post('/api/delete_task', { title: listTitle, task : taskName });
+            loadTodoLists();
+        } catch (error) {
+            setErrorMessage(error);
+        }
+    };
+
     const closeTaskSubwindow = () => {
         setSelectedTask(null);  // Close the subwindow
     };
@@ -191,6 +203,7 @@ function TaskTracker() {
 
                                                     {/* Show Details Button */}
                                                     <button onClick={() => handleShowDetails(task)}>Show Details</button>
+                                                    <button class="delete" onClick={() => handleDelete(task.name, list.title)}>Delete</button>
                                                 </li>
                                             ))}
                                         </ul>

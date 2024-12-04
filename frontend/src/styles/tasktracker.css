@@ -217,3 +217,7 @@ select:hover, select:focus {
     font-size: 14px;
     margin-top: 12px;
 }
+
+.delete{
+    background-color: red;
+}

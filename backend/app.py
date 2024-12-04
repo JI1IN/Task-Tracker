@@ -34,6 +34,16 @@ def add_task():
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
+@app.route('/api/delete_task', methods=['POST'])
+def delete_task():
+    try:
+        task = request.json.get('task')
+        list = request.json.get('title')
+        tracker.remove_task(list, task)
+        print(list+";;;"+task)
+        return jsonify(success=True)
+    except Exception as e:
+        return jsonify({'error' : str(e)}), 500
 
 @app.route('/api/get_lists', methods=['GET'])
 def get_lists():
