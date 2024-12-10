@@ -11,6 +11,9 @@ function TaskTracker() {
     const [selectedList, setSelectedList] = useState('');
     const [errorMessage, setErrorMessage] = useState('');
     const [selectedTask, setSelectedTask] = useState(null);
+    const [isTaskModalOpen, setIsTaskModalOpen] = useState(false); // State to control modal visibility
+    const [isDetailsModalOpen, setIsDetailsModalOpen] = useState(false); // State to control task details modal visibility
+    const [expandedTask, setExpandedTask] = useState(null); // Track the expanded task for both mobile and desktop
 
     useEffect(() => {
         loadTodoLists();
@@ -66,6 +69,7 @@ function TaskTracker() {
                 setNewTask('');
                 setTaskDueDate('');
                 loadTodoLists();
+                closeTaskModal(); // Close modal after adding task
             } else {
                 setErrorMessage('Failed to add task. Please try again.');
             }
@@ -104,7 +108,11 @@ function TaskTracker() {
     };
 
     const handleShowDetails = (task) => {
-        setSelectedTask(task);
+        setSelectedTask({
+            ...task,
+            dueDate: task.dueDate || task.date // Ensure 'dueDate' is included
+        });
+        setIsDetailsModalOpen(true); // Open the details modal
     };
 
     const handleDelete = async (taskName, listTitle) => {
@@ -116,19 +124,33 @@ function TaskTracker() {
         }
     };
 
-    const closeTaskSubwindow = () => {
-        setSelectedTask(null);
+    const closeTaskModal = () => {
+        setIsTaskModalOpen(false); // Close the modal
+        setNewTask('');
+        setTaskDueDate('');
+        setTaskPriority('medium');
+        setSelectedList('');
+    };
+
+    const closeDetailsModal = () => {
+        setIsDetailsModalOpen(false); // Close the task details modal
+        setSelectedTask(null); // Clear the selected task details
+    };
+
+    const toggleTaskDetails = (taskName) => {
+        setExpandedTask(expandedTask === taskName ? null : taskName); // Toggle the task details visibility
     };
 
     return (
         <div className="min-h-screen bg-gray-100">
-            <header className="bg-blue-600 text-white p-6 text-center">
-                <h1 className="text-4xl font-bold">Task Tracker</h1>
+            <header className="bg-600 p-6 flex justify-start md:justify-center items-center w-full">
+                <h1 className="text-4xl font-bold">Tracker</h1>
             </header>
 
             <div className="task-container max-w-4xl mx-auto p-4">
                 <section className="form-section mb-8">
-                    <form className="list-form flex flex-col gap-4 p-6 bg-white rounded-lg shadow-md" onSubmit={addList}>
+                    <form className="list-form flex flex-col gap-4 p-6 bg-white rounded-lg shadow-md"
+                          onSubmit={addList}>
                         <input
                             type="text"
                             value={newListTitle}
@@ -141,53 +163,6 @@ function TaskTracker() {
                             className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition duration-300"
                         >
                             Add List
-                        </button>
-                    </form>
-
-                    <form className="task-form flex flex-col gap-4 p-6 bg-white rounded-lg shadow-md mt-8" onSubmit={addTask}>
-                        <input
-                            type="text"
-                            value={newTask}
-                            onChange={(e) => setNewTask(e.target.value)}
-                            placeholder="New Task"
-                            className="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                        />
-                        <input
-                            type="date"
-                            value={taskDueDate}
-                            onChange={(e) => setTaskDueDate(e.target.value)}
-                            className="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                        />
-                        <select
-                            value={taskPriority}
-                            onChange={(e) => setTaskPriority(e.target.value)}
-                            className="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                        >
-                            <option value="high">High</option>
-                            <option value="medium">Medium</option>
-                            <option value="low">Low</option>
-                        </select>
-
-                        <label htmlFor="listSelect" className="text-sm">Select a List</label>
-                        <select
-                            id="listSelect"
-                            value={selectedList}
-                            onChange={(e) => setSelectedList(e.target.value)}
-                            className="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                        >
-                            <option value="">Select a list</option>
-                            {lists.map((list) => (
-                                <option key={list.title} value={list.title}>
-                                    {list.title}
-                                </option>
-                            ))}
-                        </select>
-
-                        <button
-                            type="submit"
-                            className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition duration-300"
-                        >
-                            Add Task
                         </button>
                     </form>
                 </section>
@@ -220,21 +195,35 @@ function TaskTracker() {
                                                                 onChange={(e) => toggleTaskDone(task.name, e.target.checked, list.title)}
                                                                 className="mr-4"
                                                             />
-                                                            <span>{task.name}</span> - Priority: <span className={`text-${task.priority === 'high' ? 'red' : task.priority === 'medium' ? 'yellow' : 'green'}-600`}>{task.priority}</span>
+                                                            <span
+                                                                className="cursor-pointer"
+                                                                onClick={() => toggleTaskDetails(task.name)}
+                                                            >
+                                                                {task.name}
+                                                            </span>
                                                         </div>
-                                                        <div className="flex space-x-2">
-                                                            <button
-                                                                onClick={() => handleShowDetails(task)}
-                                                                className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition duration-300"
-                                                            >
-                                                                Show Details
-                                                            </button>
-                                                            <button
-                                                                onClick={() => handleDelete(task.name, list.title)}
-                                                                className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition duration-300"
-                                                            >
-                                                                Delete
-                                                            </button>
+                                                    </div>
+
+                                                    {/* Show task properties for both mobile and desktop */}
+                                                    <div className={`mt-4 pl-4 ${expandedTask === task.name ? 'block' : 'hidden'}`}>
+                                                        <div className="flex flex-col space-y-2">
+                                                            <span className={`text-${task.priority === 'high' ? 'red' : task.priority === 'medium' ? 'yellow' : 'green'}-600`}>
+                                                                Priority: {task.priority}
+                                                            </span>
+                                                            <div className="flex space-x-4">
+                                                                <button
+                                                                    onClick={() => handleShowDetails(task)} // Show task details
+                                                                    className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition duration-300 text-sm"
+                                                                >
+                                                                    Show Details
+                                                                </button>
+                                                                <button
+                                                                    onClick={() => handleDelete(task.name, list.title)}
+                                                                    className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition duration-300 text-sm"
+                                                                >
+                                                                    Delete
+                                                                </button>
+                                                            </div>
                                                         </div>
                                                     </div>
                                                 </li>
@@ -246,23 +235,97 @@ function TaskTracker() {
                         </ul>
                     </div>
                 </section>
-
-                {selectedTask && (
-                    <div className="task-subwindow fixed top-0 left-0 w-full h-full bg-black bg-opacity-50 flex justify-center items-center">
-                        <div className="task-details bg-white p-8 rounded-lg w-1/3 shadow-lg">
-                            <h2 className="text-2xl font-semibold mb-4">{selectedTask.name}</h2>
-                            <p><strong>Due Date:</strong> {selectedTask.due_date}</p>
-                            <p><strong>Priority:</strong> {selectedTask.priority}</p>
-                            <button
-                                onClick={closeTaskSubwindow}
-                                className="mt-4 px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700"
-                            >
-                                Close
-                            </button>
-                        </div>
-                    </div>
-                )}
             </div>
+
+            {/* Floating Add Task Button */}
+            <button
+                onClick={() => setIsTaskModalOpen(true)} // Open modal on button click
+                className="fixed bottom-4 right-4 px-6 py-4 bg-green-600 text-white rounded-full hover:bg-green-700 transition duration-300 shadow-lg"
+            >
+                + Add Task
+            </button>
+
+            {/* Task Details Modal */}
+            {isDetailsModalOpen && selectedTask && (
+                <div
+                    className="task-details-modal fixed top-0 left-0 w-full h-full bg-black bg-opacity-50 flex justify-center items-center">
+                    <div className="task-details-modal-content bg-white p-8 rounded-lg w-11/12 sm:w-9/12 md:w-1/3 shadow-lg">
+                        <h2 className="text-2xl font-semibold mb-4">Task Details</h2>
+                        <p><strong>Task Name:</strong> {selectedTask.name}</p>
+                        <p><strong>Priority:</strong> {selectedTask.priority}</p>
+                        <p><strong>Due Date:</strong> {selectedTask.dueDate || selectedTask.date}</p>
+                        <p><strong>Status:</strong> {selectedTask.done ? 'Completed' : 'Pending'}</p>
+                        <button
+                            onClick={closeDetailsModal}
+                            className="px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 mt-4"
+                        >
+                            Close
+                        </button>
+                    </div>
+                </div>
+            )}
+
+            {/* Task Modal */}
+            {isTaskModalOpen && (
+                <div
+                    className="task-modal fixed top-0 left-0 w-full h-full bg-black bg-opacity-50 flex justify-center items-center">
+                    <div className="task-modal-content bg-white p-8 rounded-lg w-11/12 sm:w-9/12 md:w-1/3 shadow-lg">
+                        <h2 className="text-2xl font-semibold mb-4">Add Task</h2>
+                        <form onSubmit={addTask}>
+                            <input
+                                type="text"
+                                value={newTask}
+                                onChange={(e) => setNewTask(e.target.value)}
+                                placeholder="Task Name"
+                                className="px-4 py-2 border border-gray-300 rounded-lg w-full mb-4"
+                            />
+                            <input
+                                type="date"
+                                value={taskDueDate}
+                                onChange={(e) => setTaskDueDate(e.target.value)}
+                                className="px-4 py-2 border border-gray-300 rounded-lg w-full mb-4"
+                            />
+                            <select
+                                value={taskPriority}
+                                onChange={(e) => setTaskPriority(e.target.value)}
+                                className="px-4 py-2 border border-gray-300 rounded-lg w-full mb-4"
+                            >
+                                <option value="high">High</option>
+                                <option value="medium">Medium</option>
+                                <option value="low">Low</option>
+                            </select>
+                            <select
+                                value={selectedList}
+                                onChange={(e) => setSelectedList(e.target.value)}
+                                className="px-4 py-2 border border-gray-300 rounded-lg w-full mb-4"
+                            >
+                                <option value="">Select List</option>
+                                {lists.map((list) => (
+                                    <option key={list.title} value={list.title}>
+                                        {list.title}
+                                    </option>
+                                ))}
+                            </select>
+
+                            <div className="flex flex-col sm:flex-row justify-between">
+                                <button
+                                    type="button"
+                                    onClick={closeTaskModal}
+                                    className="px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 mb-4 sm:mb-0"
+                                >
+                                    Close
+                                </button>
+                                <button
+                                    type="submit"
+                                    className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+                                >
+                                    Add Task
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            )}
         </div>
     );
 }

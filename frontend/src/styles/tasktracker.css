@@ -1,3 +1,11 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+.task-list-content {
+    transition: max-height 0.3s ease-in-out;
+    overflow: hidden;
+    max-height: 0;
+}
+.task-list-content.max-h-screen {
+    max-height: 1000px;
+}
