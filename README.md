@@ -1,7 +1,7 @@
-# Task Tracker App
+# TaskMaster
 
 ## Overview
-The Task Tracker App is a web-based application built using Flask and React to help users manage and organize tasks. It allows users to create task lists, add tasks with due dates and priorities, mark tasks as completed, and delete tasks. The app features a simple and user-friendly interface to manage tasks efficiently.
+TaskMaster is a web-based application built using Flask and React to help users manage and organize tasks. It allows users to create task lists, add tasks with due dates and priorities, mark tasks as completed, and delete tasks. The app features a simple and user-friendly interface to manage tasks efficiently.
 
 ## Features
 - **Create Task Lists**: Users can create multiple task lists to organize their tasks.
@@ -16,9 +16,10 @@ The Task Tracker App is a web-based application built using Flask and React to h
 
 ## Tech Stack
 - **Backend**: Flask (Python web framework)
-- **Frontend**: React (JavaScript library for building user interfaces)
+- **Frontend**: React (JavaScript library for building user interfaces),
 - **Database**: In-memory list storage (no external database)
-
+> **Comment:*Databases in process* (feature under development)
+> 
 ## Getting Started
 
 ### Prerequisites
