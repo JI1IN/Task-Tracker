@@ -19,6 +19,15 @@ function TaskTracker() {
         loadTodoLists();
     }, []);
 
+    useEffect(() => {
+        if (errorMessage) {
+            const timer = setTimeout(() => {
+                setErrorMessage('');
+            }, 5000);
+            return () => clearTimeout(timer);
+        }
+    }, [errorMessage]);
+
     const loadTodoLists = async () => {
         try {
             const response = await axios.get('/api/get_lists');
@@ -86,7 +95,6 @@ function TaskTracker() {
                 list_title: listTitle,
             });
 
-            // Optimistic UI update...
             const updatedLists = lists.map((list) => {
                 if (list.title === listTitle) {
                     list.tasks = list.tasks.map((task) =>

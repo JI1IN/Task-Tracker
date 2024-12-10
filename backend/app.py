@@ -1,37 +1,56 @@
 from flask import Flask, request, jsonify
 import json
+from datetime import datetime
 
 app = Flask(__name__)
-
 
 class TaskTracker:
     def __init__(self):
         self.lists = []
 
-    def add_list(self, title):
-        self.lists.append({"title": title, "tasks": [], "expanded": False})
+    def add_list(self, list_title):
+        original_title = list_title
+        index = 1
+        # Ensure unique list title
+        while any(l['title'] == list_title for l in self.lists):
+            list_title = f"{original_title} ({index})"
+            index += 1
+        self.lists.append({
+            'title': list_title,
+            'tasks': [],
+            'expanded': False
+        })
 
-    def add_task(self, task, due_date, priority, list_title):
+    def add_task_to_list(self, list_title, task_name, due_date, priority):
         for todo_list in self.lists:
             if todo_list['title'] == list_title:
+                original_task_name = task_name
+                index = 1
+                # Ensure unique task name within the list
+                while any(task['name'] == task_name for task in todo_list['tasks']):
+                    task_name = f"{original_task_name} ({index})"
+                    index += 1
                 todo_list['tasks'].append({
-                    "name": task,
-                    "dueDate": due_date,
-                    "priority": priority,
-                    "done": False,
+                    'name': task_name,
+                    'dueDate': due_date.strftime('%Y.%m.%d'),
+                    'priority': priority,
+                    'done': False
                 })
+                break
+
+    def get_all_lists(self):
+        return self.lists
 
     def update_task_status(self, list_title, task_name, done):
         for todo_list in self.lists:
             if todo_list['title'] == list_title:
                 for task in todo_list['tasks']:
                     if task['name'] == task_name:
-                        task['done'] = not task['done']
-                        print(f"Updated task '{task_name}' to {'done' if task['done'] else 'not done'}")
+                        task['done'] = done
                         return True
         return False
 
-    def delete_task(self, list_title, task_name):
+    def remove_task(self, list_title, task_name):
         for todo_list in self.lists:
             if todo_list['title'] == list_title:
                 todo_list['tasks'] = [task for task in todo_list['tasks'] if task['name'] != task_name]
@@ -43,7 +62,7 @@ tracker = TaskTracker()
 
 @app.route('/api/get_lists', methods=['GET'])
 def get_lists():
-    return jsonify(tracker.lists)
+    return jsonify(tracker.get_all_lists()), 200
 
 
 @app.route('/api/add_list', methods=['POST'])
@@ -57,13 +76,13 @@ def add_list():
 
 @app.route('/api/add_task', methods=['POST'])
 def add_task():
-    task = request.json.get('task')
+    task_name = request.json.get('task')
     due_date = request.json.get('date')
     priority = request.json.get('priority')
     list_title = request.json.get('list_title')
 
-    if task and due_date and priority and list_title:
-        tracker.add_task(task, due_date, priority, list_title)
+    if task_name and due_date and priority and list_title:
+        tracker.add_task_to_list(list_title, task_name, datetime.strptime(due_date, '%Y.%m.%d'), priority)
         return jsonify({'success': True}), 201
     return jsonify({'error': 'Missing required fields'}), 400
 
