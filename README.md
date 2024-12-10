@@ -18,7 +18,7 @@ TaskMaster is a web-based application built using Flask and React to help users 
 - **Backend**: Flask (Python web framework)
 - **Frontend**: React (JavaScript library for building user interfaces),
 - **Database**: In-memory list storage (no external database)
-> **Comment:*Databases in process* (feature under development)
+> **Comment: *Databases in process* (feature under development)
 > 
 ## Getting Started
 
