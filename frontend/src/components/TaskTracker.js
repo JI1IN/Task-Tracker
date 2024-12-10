@@ -249,7 +249,7 @@ function TaskTracker() {
             {isDetailsModalOpen && selectedTask && (
                 <div
                     className="task-details-modal fixed top-0 left-0 w-full h-full bg-black bg-opacity-50 flex justify-center items-center">
-                    <div className="task-details-modal-content bg-white p-8 rounded-lg w-11/12 sm:w-9/12 md:w-1/3 shadow-lg">
+                    <div className="task-details-modal-content bg-white p-8 rounded-lg w-1/3 shadow-lg">
                         <h2 className="text-2xl font-semibold mb-4">Task Details</h2>
                         <p><strong>Task Name:</strong> {selectedTask.name}</p>
                         <p><strong>Priority:</strong> {selectedTask.priority}</p>
@@ -265,7 +265,6 @@ function TaskTracker() {
                 </div>
             )}
 
-            {/* Task Modal */}
             {isTaskModalOpen && (
                 <div
                     className="task-modal fixed top-0 left-0 w-full h-full bg-black bg-opacity-50 flex justify-center items-center">
