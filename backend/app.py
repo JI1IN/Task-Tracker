@@ -1,53 +1,71 @@
-from datetime import datetime
-from flask import Flask, jsonify, request, send_from_directory
-from tracker import TaskTracker
+from flask import Flask, request, jsonify
+import json
 
-app = Flask(__name__, static_folder='../frontend/build', static_url_path='/')
+app = Flask(__name__)
+
+
+class TaskTracker:
+    def __init__(self):
+        self.lists = []
+
+    def add_list(self, title):
+        self.lists.append({"title": title, "tasks": [], "expanded": False})
+
+    def add_task(self, task, due_date, priority, list_title):
+        for todo_list in self.lists:
+            if todo_list['title'] == list_title:
+                todo_list['tasks'].append({
+                    "name": task,
+                    "dueDate": due_date,
+                    "priority": priority,
+                    "done": False,
+                })
+
+    def update_task_status(self, list_title, task_name, done):
+        for todo_list in self.lists:
+            if todo_list['title'] == list_title:
+                for task in todo_list['tasks']:
+                    if task['name'] == task_name:
+                        task['done'] = not task['done']
+                        print(f"Updated task '{task_name}' to {'done' if task['done'] else 'not done'}")
+                        return True
+        return False
+
+    def delete_task(self, list_title, task_name):
+        for todo_list in self.lists:
+            if todo_list['title'] == list_title:
+                todo_list['tasks'] = [task for task in todo_list['tasks'] if task['name'] != task_name]
+                return True
+        return False
+
 tracker = TaskTracker()
+
+
+@app.route('/api/get_lists', methods=['GET'])
+def get_lists():
+    return jsonify(tracker.lists)
 
 
 @app.route('/api/add_list', methods=['POST'])
 def add_list():
-    list_title = request.json.get('title')
-    tracker.add_list(list_title)
-    return jsonify(success=True)
+    title = request.json.get('title')
+    if title:
+        tracker.add_list(title)
+        return jsonify({'success': True}), 201
+    return jsonify({'error': 'Missing title'}), 400
 
 
 @app.route('/api/add_task', methods=['POST'])
 def add_task():
-    try:
-        task = request.json.get('task')
-        date_str = request.json.get('date')
-        priority = request.json.get('priority')
-        list_title = request.json.get('list_title')
+    task = request.json.get('task')
+    due_date = request.json.get('date')
+    priority = request.json.get('priority')
+    list_title = request.json.get('list_title')
 
-        if not task or not date_str or not priority or not list_title:
-            return jsonify({'error': 'Missing required fields'}), 400
-
-        try:
-            date_of_task = datetime.strptime(date_str, '%Y.%m.%d')
-        except ValueError:
-            return jsonify({'error': f"Invalid date format. Expected YYYY.MM.DD, got {date_str}"}), 400
-
-        tracker.add_task_to_list(list_title, task, date_of_task, priority)
-        return jsonify(success=True)
-    except Exception as e:
-        return jsonify({'error': str(e)}), 500
-
-@app.route('/api/delete_task', methods=['POST'])
-def delete_task():
-    try:
-        task = request.json.get('task')
-        list = request.json.get('title')
-        tracker.remove_task(list, task)
-        print(list+";;;"+task)
-        return jsonify(success=True)
-    except Exception as e:
-        return jsonify({'error' : str(e)}), 500
-
-@app.route('/api/get_lists', methods=['GET'])
-def get_lists():
-    return jsonify(tracker.get_all_lists())
+    if task and due_date and priority and list_title:
+        tracker.add_task(task, due_date, priority, list_title)
+        return jsonify({'success': True}), 201
+    return jsonify({'error': 'Missing required fields'}), 400
 
 
 @app.route('/api/update_task_status', methods=['POST'])
@@ -55,6 +73,9 @@ def update_task_status():
     task_name = request.json.get('task')
     done = request.json.get('done')
     list_title = request.json.get('list_title')
+
+    if not task_name or done is None or not list_title:
+        return jsonify({'error': 'Missing required fields'}), 400
 
     success = tracker.update_task_status(list_title, task_name, done)
 
@@ -64,10 +85,19 @@ def update_task_status():
         return jsonify({'error': 'Failed to update task status'}), 400
 
 
-@app.route('/', defaults={'path': ''})
-@app.route('/<path:path>')
-def serve(path):
-    return send_from_directory(app.static_folder, 'index.html')
+@app.route('/api/delete_task', methods=['POST'])
+def delete_task():
+    task_name = request.json.get('task')
+    list_title = request.json.get('title')
+
+    if not task_name or not list_title:
+        return jsonify({'error': 'Missing required fields'}), 400
+
+    success = tracker.delete_task(list_title, task_name)
+    if success:
+        return jsonify({'success': True})
+    else:
+        return jsonify({'error': 'Task not found'}), 400
 
 if __name__ == '__main__':
     app.run(debug=True)

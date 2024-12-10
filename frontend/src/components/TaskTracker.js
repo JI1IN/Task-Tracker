@@ -11,9 +11,9 @@ function TaskTracker() {
     const [selectedList, setSelectedList] = useState('');
     const [errorMessage, setErrorMessage] = useState('');
     const [selectedTask, setSelectedTask] = useState(null);
-    const [isTaskModalOpen, setIsTaskModalOpen] = useState(false); // State to control modal visibility
-    const [isDetailsModalOpen, setIsDetailsModalOpen] = useState(false); // State to control task details modal visibility
-    const [expandedTask, setExpandedTask] = useState(null); // Track the expanded task for both mobile and desktop
+    const [isTaskModalOpen, setIsTaskModalOpen] = useState(false);
+    const [isDetailsModalOpen, setIsDetailsModalOpen] = useState(false);
+    const [expandedTask, setExpandedTask] = useState(null);
 
     useEffect(() => {
         loadTodoLists();
@@ -38,7 +38,7 @@ function TaskTracker() {
         try {
             await axios.post('/api/add_list', { title: newListTitle });
             setNewListTitle('');
-            loadTodoLists();
+            await loadTodoLists();
         } catch (error) {
             setErrorMessage("Error adding list. Please try again.");
         }
@@ -68,8 +68,8 @@ function TaskTracker() {
             if (response.data.success) {
                 setNewTask('');
                 setTaskDueDate('');
-                loadTodoLists();
-                closeTaskModal(); // Close modal after adding task
+                await loadTodoLists();
+                closeTaskModal();
             } else {
                 setErrorMessage('Failed to add task. Please try again.');
             }
@@ -86,6 +86,7 @@ function TaskTracker() {
                 list_title: listTitle,
             });
 
+            // Optimistic UI update...
             const updatedLists = lists.map((list) => {
                 if (list.title === listTitle) {
                     list.tasks = list.tasks.map((task) =>
@@ -97,7 +98,7 @@ function TaskTracker() {
 
             setLists(updatedLists);
         } catch (error) {
-            console.error('Error updating task status:', error);
+            console.error('Error updating task status:', error.response ? error.response.data : error.message);
         }
     };
 
@@ -110,22 +111,22 @@ function TaskTracker() {
     const handleShowDetails = (task) => {
         setSelectedTask({
             ...task,
-            dueDate: task.dueDate || task.date // Ensure 'dueDate' is included
+            dueDate: task.dueDate || task.date
         });
-        setIsDetailsModalOpen(true); // Open the details modal
+        setIsDetailsModalOpen(true);
     };
 
     const handleDelete = async (taskName, listTitle) => {
         try {
             await axios.post('/api/delete_task', { title: listTitle, task: taskName });
-            loadTodoLists();
+            await loadTodoLists();
         } catch (error) {
             setErrorMessage(error);
         }
     };
 
     const closeTaskModal = () => {
-        setIsTaskModalOpen(false); // Close the modal
+        setIsTaskModalOpen(false);
         setNewTask('');
         setTaskDueDate('');
         setTaskPriority('medium');
@@ -133,12 +134,8 @@ function TaskTracker() {
     };
 
     const closeDetailsModal = () => {
-        setIsDetailsModalOpen(false); // Close the task details modal
-        setSelectedTask(null); // Clear the selected task details
-    };
-
-    const toggleTaskDetails = (taskName) => {
-        setExpandedTask(expandedTask === taskName ? null : taskName); // Toggle the task details visibility
+        setIsDetailsModalOpen(false);
+        setSelectedTask(null);
     };
 
     return (
@@ -197,14 +194,13 @@ function TaskTracker() {
                                                             />
                                                             <span
                                                                 className="cursor-pointer"
-                                                                onClick={() => toggleTaskDetails(task.name)}
+                                                                onClick={() => handleShowDetails(task)}
                                                             >
                                                                 {task.name}
                                                             </span>
                                                         </div>
                                                     </div>
 
-                                                    {/* Show task properties for both mobile and desktop */}
                                                     <div className={`mt-4 pl-4 ${expandedTask === task.name ? 'block' : 'hidden'}`}>
                                                         <div className="flex flex-col space-y-2">
                                                             <span className={`text-${task.priority === 'high' ? 'red' : task.priority === 'medium' ? 'yellow' : 'green'}-600`}>
@@ -212,7 +208,7 @@ function TaskTracker() {
                                                             </span>
                                                             <div className="flex space-x-4">
                                                                 <button
-                                                                    onClick={() => handleShowDetails(task)} // Show task details
+                                                                    onClick={() => handleShowDetails(task)}
                                                                     className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition duration-300 text-sm"
                                                                 >
                                                                     Show Details
@@ -237,15 +233,13 @@ function TaskTracker() {
                 </section>
             </div>
 
-            {/* Floating Add Task Button */}
             <button
-                onClick={() => setIsTaskModalOpen(true)} // Open modal on button click
+                onClick={() => setIsTaskModalOpen(true)}
                 className="fixed bottom-4 right-4 px-6 py-4 bg-green-600 text-white rounded-full hover:bg-green-700 transition duration-300 shadow-lg"
             >
                 + Add Task
             </button>
 
-            {/* Task Details Modal */}
             {isDetailsModalOpen && selectedTask && (
                 <div
                     className="task-details-modal fixed top-0 left-0 w-full h-full bg-black bg-opacity-50 flex justify-center items-center">
@@ -289,10 +283,11 @@ function TaskTracker() {
                                 onChange={(e) => setTaskPriority(e.target.value)}
                                 className="px-4 py-2 border border-gray-300 rounded-lg w-full mb-4"
                             >
-                                <option value="high">High</option>
-                                <option value="medium">Medium</option>
                                 <option value="low">Low</option>
+                                <option value="medium">Medium</option>
+                                <option value="high">High</option>
                             </select>
+
                             <select
                                 value={selectedList}
                                 onChange={(e) => setSelectedList(e.target.value)}
@@ -306,22 +301,19 @@ function TaskTracker() {
                                 ))}
                             </select>
 
-                            <div className="flex flex-col sm:flex-row justify-between">
-                                <button
-                                    type="button"
-                                    onClick={closeTaskModal}
-                                    className="px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 mb-4 sm:mb-0"
-                                >
-                                    Close
-                                </button>
-                                <button
-                                    type="submit"
-                                    className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
-                                >
-                                    Add Task
-                                </button>
-                            </div>
+                            <button
+                                type="submit"
+                                className="px-4 py-2 bg-blue-600 text-white rounded-lg w-full"
+                            >
+                                Add Task
+                            </button>
                         </form>
+                        <button
+                            onClick={closeTaskModal}
+                            className="px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 mt-4"
+                        >
+                            Close
+                        </button>
                     </div>
                 </div>
             )}
