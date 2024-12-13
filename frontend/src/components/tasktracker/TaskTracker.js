@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import '../styles/tasktracker.css';
+import './tasktracker.css';
 
 function TaskTracker() {
     const [lists, setLists] = useState([]);
@@ -13,7 +13,6 @@ function TaskTracker() {
     const [selectedTask, setSelectedTask] = useState(null);
     const [isTaskModalOpen, setIsTaskModalOpen] = useState(false);
     const [isDetailsModalOpen, setIsDetailsModalOpen] = useState(false);
-    const [expandedTask, setExpandedTask] = useState(null);
 
     useEffect(() => {
         loadTodoLists();
@@ -124,12 +123,12 @@ function TaskTracker() {
         setIsDetailsModalOpen(true);
     };
 
-    const handleDelete = async (taskName, listTitle) => {
+    const handleDelete = async (listTitle, taskName) => {
         try {
             await axios.post('/api/delete_task', { title: listTitle, task: taskName });
             await loadTodoLists();
         } catch (error) {
-            setErrorMessage(error);
+            setErrorMessage(error.message || "Error deleting task. Please try again.");
         }
     };
 
@@ -147,35 +146,36 @@ function TaskTracker() {
     };
 
     return (
-        <div className="min-h-screen bg-gray-100">
-            <header className="bg-600 p-6 flex justify-start md:justify-center items-center w-full">
-                <h1 className="text-4xl font-bold">Tracker</h1>
+        <div className="min-h-screen ">
+            <header className=" p-6 flex justify-center items-center">
+                <h1 className="text-4xl font-semibold">Task Tracker</h1>
             </header>
 
-            <div className="task-container max-w-4xl mx-auto p-4">
+            <div className="task-container max-w-4xl mx-auto p-6">
                 <section className="form-section mb-8">
-                    <form className="list-form flex flex-col gap-4 p-6 bg-white rounded-lg shadow-md"
-                          onSubmit={addList}>
+                    <form className="list-form bg-white p-6 rounded-lg shadow-lg" onSubmit={addList}>
                         <input
                             type="text"
                             value={newListTitle}
                             onChange={(e) => setNewListTitle(e.target.value)}
                             placeholder="New List Title"
-                            className="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                            className="px-4 py-3 mb-4 w-full border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                         />
                         <button
                             type="submit"
-                            className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition duration-300"
+                            className="px-6 py-3 bg-[#F8C794] text-black-900 rounded-lg hover:bg-[#F8C794] hover:text-black-900 transition duration-300"
                         >
                             Add List
                         </button>
                     </form>
                 </section>
 
-                {errorMessage && <div className="text-red-600 text-center">{errorMessage}</div>}
+                {errorMessage && (
+                    <div className="text-red-600 text-center mb-4">{errorMessage}</div>
+                )}
 
                 <section className="task-list-section mt-8">
-                    <div className="task-list-container bg-white p-6 rounded-lg shadow-md">
+                    <div className="task-list-container bg-white p-6 rounded-lg shadow-lg">
                         <ul className="task-list">
                             {lists.map((list) => (
                                 <li key={list.title} className="mb-6">
@@ -186,11 +186,11 @@ function TaskTracker() {
                                         {list.title}
                                     </div>
                                     {list.expanded && (
-                                        <ul>
+                                        <ul className="mt-4 space-y-4">
                                             {list.tasks.map((task) => (
                                                 <li
                                                     key={task.name}
-                                                    className={`task-list-item p-4 mb-4 border border-gray-300 rounded-lg ${task.done ? 'bg-green-100 line-through' : 'bg-white'}`}
+                                                    className={`task-list-item p-4 rounded-lg border ${task.done ? 'bg-green-100 line-through' : 'bg-white'} hover:shadow-lg transition duration-300`}
                                                 >
                                                     <div className="flex justify-between items-center">
                                                         <div className="flex items-center">
@@ -201,33 +201,19 @@ function TaskTracker() {
                                                                 className="mr-4"
                                                             />
                                                             <span
-                                                                className="cursor-pointer"
+                                                                className="cursor-pointer text-lg text-gray-800 transition-transform duration-300 transform hover:scale-105"
                                                                 onClick={() => handleShowDetails(task)}
                                                             >
                                                                 {task.name}
                                                             </span>
                                                         </div>
-                                                    </div>
-
-                                                    <div className={`mt-4 pl-4 ${expandedTask === task.name ? 'block' : 'hidden'}`}>
-                                                        <div className="flex flex-col space-y-2">
-                                                            <span className={`text-${task.priority === 'high' ? 'red' : task.priority === 'medium' ? 'yellow' : 'green'}-600`}>
-                                                                Priority: {task.priority}
-                                                            </span>
-                                                            <div className="flex space-x-4">
-                                                                <button
-                                                                    onClick={() => handleShowDetails(task)}
-                                                                    className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition duration-300 text-sm"
-                                                                >
-                                                                    Show Details
-                                                                </button>
-                                                                <button
-                                                                    onClick={() => handleDelete(task.name, list.title)}
-                                                                    className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition duration-300 text-sm"
-                                                                >
-                                                                    Delete
-                                                                </button>
-                                                            </div>
+                                                        <div>
+                                                            <button
+                                                                onClick={() => handleDelete(list.title, task.name)}
+                                                                className="px-4 py-2 bg-[#F8C794] text-black-900 rounded-lg hover:bg-[#F8C794] hover:text-black-900 transition duration-300 text-sm"
+                                                            >
+                                                                Delete
+                                                            </button>
                                                         </div>
                                                     </div>
                                                 </li>
@@ -243,85 +229,96 @@ function TaskTracker() {
 
             <button
                 onClick={() => setIsTaskModalOpen(true)}
-                className="fixed bottom-4 right-4 px-6 py-4 bg-green-600 text-white rounded-full hover:bg-green-700 transition duration-300 shadow-lg"
+                className="fixed bottom-6 right-6 px-6 py-4 bg-[#F8C794] text-black-900 rounded-full shadow-xl hover:bg-[#F8C794] hover:text-black-900 transition duration-300"
             >
                 + Add Task
             </button>
 
             {isDetailsModalOpen && selectedTask && (
-                <div
-                    className="task-details-modal fixed top-0 left-0 w-full h-full bg-black bg-opacity-50 flex justify-center items-center">
-                    <div className="task-details-modal-content bg-white p-8 rounded-lg w-1/3 shadow-lg">
+                <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
+                    <div className="bg-white p-8 rounded-lg w-11/12 sm:w-9/12 md:w-1/3 shadow-lg">
                         <h2 className="text-2xl font-semibold mb-4">Task Details</h2>
                         <p><strong>Task Name:</strong> {selectedTask.name}</p>
+                        <p><strong>Due Date:</strong> {selectedTask.dueDate}</p>
                         <p><strong>Priority:</strong> {selectedTask.priority}</p>
-                        <p><strong>Due Date:</strong> {selectedTask.dueDate || selectedTask.date}</p>
-                        <p><strong>Status:</strong> {selectedTask.done ? 'Completed' : 'Pending'}</p>
-                        <button
-                            onClick={closeDetailsModal}
-                            className="px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 mt-4"
-                        >
-                            Close
-                        </button>
+                        <div className="flex justify-between mt-4">
+                            <button
+                                onClick={closeDetailsModal}
+                                className="px-4 py-2 bg-[#F8C794] text-black-900 rounded-lg hover:bg-[#F8C794] hover:text-black-900 transition duration-300"
+                            >
+                                Close
+                            </button>
+                        </div>
                     </div>
                 </div>
             )}
 
             {isTaskModalOpen && (
-                <div
-                    className="task-modal fixed top-0 left-0 w-full h-full bg-black bg-opacity-50 flex justify-center items-center">
-                    <div className="task-modal-content bg-white p-8 rounded-lg w-11/12 sm:w-9/12 md:w-1/3 shadow-lg">
-                        <h2 className="text-2xl font-semibold mb-4">Add Task</h2>
+                <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
+                    <div className="bg-white p-8 rounded-lg w-11/12 sm:w-9/12 md:w-1/3 shadow-lg">
+                        <h2 className="text-2xl font-semibold mb-4">Add New Task</h2>
                         <form onSubmit={addTask}>
-                            <input
-                                type="text"
-                                value={newTask}
-                                onChange={(e) => setNewTask(e.target.value)}
-                                placeholder="Task Name"
-                                className="px-4 py-2 border border-gray-300 rounded-lg w-full mb-4"
-                            />
-                            <input
-                                type="date"
-                                value={taskDueDate}
-                                onChange={(e) => setTaskDueDate(e.target.value)}
-                                className="px-4 py-2 border border-gray-300 rounded-lg w-full mb-4"
-                            />
-                            <select
-                                value={taskPriority}
-                                onChange={(e) => setTaskPriority(e.target.value)}
-                                className="px-4 py-2 border border-gray-300 rounded-lg w-full mb-4"
-                            >
-                                <option value="low">Low</option>
-                                <option value="medium">Medium</option>
-                                <option value="high">High</option>
-                            </select>
-
-                            <select
-                                value={selectedList}
-                                onChange={(e) => setSelectedList(e.target.value)}
-                                className="px-4 py-2 border border-gray-300 rounded-lg w-full mb-4"
-                            >
-                                <option value="">Select List</option>
-                                {lists.map((list) => (
-                                    <option key={list.title} value={list.title}>
-                                        {list.title}
-                                    </option>
-                                ))}
-                            </select>
-
-                            <button
-                                type="submit"
-                                className="px-4 py-2 bg-blue-600 text-white rounded-lg w-full"
-                            >
-                                Add Task
-                            </button>
+                            <div className="mb-4">
+                                <label className="block mb-2">Task Name</label>
+                                <input
+                                    type="text"
+                                    value={newTask}
+                                    onChange={(e) => setNewTask(e.target.value)}
+                                    className="px-4 py-3 border border-gray-300 rounded-lg w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                />
+                            </div>
+                            <div className="mb-4">
+                                <label className="block mb-2">Due Date</label>
+                                <input
+                                    type="date"
+                                    value={taskDueDate}
+                                    onChange={(e) => setTaskDueDate(e.target.value)}
+                                    className="px-4 py-3 border border-gray-300 rounded-lg w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                />
+                            </div>
+                            <div className="mb-4">
+                                <label className="block mb-2">Priority</label>
+                                <select
+                                    value={taskPriority}
+                                    onChange={(e) => setTaskPriority(e.target.value)}
+                                    className="px-4 py-3 border border-gray-300 rounded-lg w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                >
+                                    <option value="medium">Medium</option>
+                                    <option value="high">High</option>
+                                    <option value="low">Low</option>
+                                </select>
+                            </div>
+                            <div className="mb-4">
+                                <label className="block mb-2">Select List</label>
+                                <select
+                                    value={selectedList}
+                                    onChange={(e) => setSelectedList(e.target.value)}
+                                    className="px-4 py-3 border border-gray-300 rounded-lg w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                >
+                                    <option value="">Select a list</option>
+                                    {lists.map((list) => (
+                                        <option key={list.title} value={list.title}>
+                                            {list.title}
+                                        </option>
+                                    ))}
+                                </select>
+                            </div>
+                            <div className="flex justify-between mt-4">
+                                <button
+                                    type="submit"
+                                    className="px-4 py-2 bg-[#F8C794] text-black-900 rounded-lg hover:bg-[#F8C794] hover:text-black-900 transition duration-300"
+                                >
+                                    Add Task
+                                </button>
+                                <button
+                                    type="button"
+                                    onClick={closeTaskModal}
+                                    className="px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition duration-300"
+                                >
+                                    Close
+                                </button>
+                            </div>
                         </form>
-                        <button
-                            onClick={closeTaskModal}
-                            className="px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 mt-4"
-                        >
-                            Close
-                        </button>
                     </div>
                 </div>
             )}

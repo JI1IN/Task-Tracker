@@ -112,7 +112,7 @@ def delete_task():
     if not task_name or not list_title:
         return jsonify({'error': 'Missing required fields'}), 400
 
-    success = tracker.delete_task(list_title, task_name)
+    success = tracker.remove_task(list_title, task_name)
     if success:
         return jsonify({'success': True})
     else:
