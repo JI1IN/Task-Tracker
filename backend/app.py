@@ -1,8 +1,10 @@
 from flask import Flask, request, jsonify
+from flask_cors import CORS
 import json
 from datetime import datetime
 
 app = Flask(__name__)
+CORS(app)
 
 class TaskTracker:
     def __init__(self):
