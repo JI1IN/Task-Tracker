@@ -59,12 +59,22 @@ class TaskTracker:
                 return True
         return False
 
+
 tracker = TaskTracker()
 
 
 @app.route('/api/get_lists', methods=['GET'])
 def get_lists():
     return jsonify(tracker.get_all_lists()), 200
+
+@app.route('/api/delete_list', methods=['POST'])
+def delete_list():
+    title = request.json.get('title')
+    if not title:
+        return jsonify({'error': 'Missing title'}), 400
+
+    tracker.lists = [todo_list for todo_list in tracker.lists if todo_list['title'] != title]
+    return jsonify({'success': True}), 200
 
 
 @app.route('/api/add_list', methods=['POST'])

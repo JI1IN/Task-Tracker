@@ -52,6 +52,16 @@ function TaskTracker() {
         }
     };
 
+    const deleteList = async (listTitle) => {
+    try {
+        await axios.post('/api/delete_list', { title: listTitle });
+        await loadTodoLists();
+    } catch (error) {
+        setErrorMessage("Error deleting list. Please try again.");
+    }
+};
+
+
     const addTask = async (event) => {
         event.preventDefault();
         if (!newTask || !selectedList || !taskDueDate) {
@@ -180,17 +190,25 @@ function TaskTracker() {
                             {lists.map((list) => (
                                 <li key={list.title} className="mb-6">
                                     <div
-                                        className="list-header font-semibold text-xl cursor-pointer"
-                                        onClick={() => toggleListExpand(list.title)}
-                                    >
-                                        {list.title}
+                                        className="list-header font-semibold text-xl flex justify-between items-center">
+                <span onClick={() => toggleListExpand(list.title)} className="cursor-pointer">
+                    {list.title}
+                </span>
+                                        <button
+                                            onClick={() => deleteList(list.title)}
+                                            className="px-4 py-2 bg-[#F8C794] text-black-900 rounded-lg hover:bg-[#F8C794] hover:text-black-900 transition duration-300 text-sm"
+                                        >
+                                            Delete
+                                        </button>
                                     </div>
                                     {list.expanded && (
                                         <ul className="mt-4 space-y-4">
                                             {list.tasks.map((task) => (
                                                 <li
                                                     key={task.name}
-                                                    className={`task-list-item p-4 rounded-lg border ${task.done ? 'bg-green-100 line-through' : 'bg-white'} hover:shadow-lg transition duration-300`}
+                                                    className={`task-list-item p-4 rounded-lg border ${
+                                                        task.done ? 'bg-green-100 line-through' : 'bg-white'
+                                                    } hover:shadow-lg transition duration-300`}
                                                 >
                                                     <div className="flex justify-between items-center">
                                                         <div className="flex items-center">
@@ -204,8 +222,8 @@ function TaskTracker() {
                                                                 className="cursor-pointer text-lg text-gray-800 transition-transform duration-300 transform hover:scale-105"
                                                                 onClick={() => handleShowDetails(task)}
                                                             >
-                                                                {task.name}
-                                                            </span>
+                                        {task.name}
+                                    </span>
                                                         </div>
                                                         <div>
                                                             <button
@@ -223,6 +241,7 @@ function TaskTracker() {
                                 </li>
                             ))}
                         </ul>
+
                     </div>
                 </section>
             </div>
