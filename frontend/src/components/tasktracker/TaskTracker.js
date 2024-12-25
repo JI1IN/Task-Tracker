@@ -53,14 +53,13 @@ function TaskTracker() {
     };
 
     const deleteList = async (listTitle) => {
-    try {
-        await axios.post('/api/delete_list', { title: listTitle });
-        await loadTodoLists();
-    } catch (error) {
-        setErrorMessage("Error deleting list. Please try again.");
-    }
-};
-
+        try {
+            await axios.post('/api/delete_list', { title: listTitle });
+            await loadTodoLists();
+        } catch (error) {
+            setErrorMessage("Error deleting list. Please try again.");
+        }
+    };
 
     const addTask = async (event) => {
         event.preventDefault();
@@ -148,6 +147,7 @@ function TaskTracker() {
         setTaskDueDate('');
         setTaskPriority('medium');
         setSelectedList('');
+        setErrorMessage('');
     };
 
     const closeDetailsModal = () => {
@@ -156,8 +156,8 @@ function TaskTracker() {
     };
 
     return (
-        <div className="min-h-screen ">
-            <header className=" p-6 flex justify-center items-center">
+        <div className="min-h-screen">
+            <header className="p-6 flex justify-center items-center">
                 <h1 className="text-4xl font-semibold">Task Tracker</h1>
             </header>
 
@@ -180,10 +180,6 @@ function TaskTracker() {
                     </form>
                 </section>
 
-                {errorMessage && (
-                    <div className="text-red-600 text-center mb-4">{errorMessage}</div>
-                )}
-
                 <section className="task-list-section mt-8">
                     <div className="task-list-container bg-white p-6 rounded-lg shadow-lg">
                         <ul className="task-list">
@@ -191,9 +187,9 @@ function TaskTracker() {
                                 <li key={list.title} className="mb-6">
                                     <div
                                         className="list-header font-semibold text-xl flex justify-between items-center">
-                <span onClick={() => toggleListExpand(list.title)} className="cursor-pointer">
-                    {list.title}
-                </span>
+                                        <span onClick={() => toggleListExpand(list.title)} className="cursor-pointer">
+                                            {list.title}
+                                        </span>
                                         <button
                                             onClick={() => deleteList(list.title)}
                                             className="px-4 py-2 bg-[#F8C794] text-black-900 rounded-lg hover:bg-[#F8C794] hover:text-black-900 transition duration-300 text-sm"
@@ -222,8 +218,8 @@ function TaskTracker() {
                                                                 className="cursor-pointer text-lg text-gray-800 transition-transform duration-300 transform hover:scale-105"
                                                                 onClick={() => handleShowDetails(task)}
                                                             >
-                                        {task.name}
-                                    </span>
+                                                                {task.name}
+                                                            </span>
                                                         </div>
                                                         <div>
                                                             <button
@@ -241,7 +237,6 @@ function TaskTracker() {
                                 </li>
                             ))}
                         </ul>
-
                     </div>
                 </section>
             </div>
@@ -253,30 +248,14 @@ function TaskTracker() {
                 + Add Task
             </button>
 
-            {isDetailsModalOpen && selectedTask && (
-                <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
-                    <div className="bg-white p-8 rounded-lg w-11/12 sm:w-9/12 md:w-1/3 shadow-lg">
-                        <h2 className="text-2xl font-semibold mb-4">Task Details</h2>
-                        <p><strong>Task Name:</strong> {selectedTask.name}</p>
-                        <p><strong>Due Date:</strong> {selectedTask.dueDate}</p>
-                        <p><strong>Priority:</strong> {selectedTask.priority}</p>
-                        <div className="flex justify-between mt-4">
-                            <button
-                                onClick={closeDetailsModal}
-                                className="px-4 py-2 bg-[#F8C794] text-black-900 rounded-lg hover:bg-[#F8C794] hover:text-black-900 transition duration-300"
-                            >
-                                Close
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            )}
-
             {isTaskModalOpen && (
                 <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
                     <div className="bg-white p-8 rounded-lg w-11/12 sm:w-9/12 md:w-1/3 shadow-lg">
                         <h2 className="text-2xl font-semibold mb-4">Add New Task</h2>
                         <form onSubmit={addTask}>
+                            {errorMessage && (
+                                <div className="text-red-600 text-center mb-4">{errorMessage}</div>
+                            )}
                             <div className="mb-4">
                                 <label className="block mb-2">Task Name</label>
                                 <input
@@ -338,6 +317,31 @@ function TaskTracker() {
                                 </button>
                             </div>
                         </form>
+                    </div>
+                </div>
+            )}
+
+            {isDetailsModalOpen && selectedTask && (
+                <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
+                    <div className="bg-white p-8 rounded-lg w-11/12 sm:w-9/12 md:w-1/3 shadow-lg">
+                        <h2 className="text-2xl font-semibold mb-4">Task Details</h2>
+                        <div className="mb-4">
+                            <strong>Task Name:</strong> <span>{selectedTask.name}</span>
+                        </div>
+                        <div className="mb-4">
+                            <strong>Due Date:</strong> <span>{selectedTask.dueDate}</span>
+                        </div>
+                        <div className="mb-4">
+                            <strong>Priority:</strong> <span>{selectedTask.priority}</span>
+                        </div>
+                        <div className="flex justify-between mt-4">
+                            <button
+                                onClick={closeDetailsModal}
+                                className="px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition duration-300"
+                            >
+                                Close
+                            </button>
+                        </div>
                     </div>
                 </div>
             )}
