@@ -7,13 +7,8 @@ TaskMaster is a web-based application built using Flask and React to help users 
 - **Create Task Lists**: Users can create multiple task lists to organize their tasks.
 - **Add Tasks**: Users can add tasks with a title, due date, priority level (High, Medium, Low), and associate them with a specific task list.
 - **Task Status**: Tasks can be marked as completed or pending. 
-
-> **Comment:** *In process* (feature under development)
-
 - **Delete Tasks**: Users can delete tasks from any list.
-
-> **Comment:** *Delete lists in process* (feature under development)
-
+- **Delete Lists**: Users can delete lists that they deem as not needed.
 ## Tech Stack
 - **Backend**: Flask (Python web framework)
 - **Frontend**: React (JavaScript library for building user interfaces),
@@ -74,42 +69,17 @@ Before you begin, ensure you have the following installed:
 The backend exposes the following RESTful API endpoints:
 
 - **POST /api/add_list**: Adds a new task list.
-  - Request body: `{ "title": "List Title" }`
   
-- **POST /api/add_task**: Adds a new task to a specific list.
-  - Request body: 
-    ```json
-    {
-      "task": "Task Title",
-      "date": "YYYY.MM.DD",
-      "priority": "high/medium/low",
-      "list_title": "List Title"
-    }
-    ```
-  
-- **POST /api/delete_task**: Deletes a task from a list.
-  - Request body: 
-    ```json
-    {
-      "task": "Task Title",
-      "title": "List Title"
-    }
-    ```
-
 - **GET /api/get_lists**: Fetches all task lists with their respective tasks.
 
-- **POST /api/update_task_status**: Updates the status of a task (done or not done). 
+- **DELETE /api/delete_list**: Deletes a list.
+    
+- **POST /api/add_task**: Adds a new task to a specific list.
+  
+- **POST /api/delete_task**: Deletes a task from a list.
 
-> **Comment:** * Update task status in process* (feature under development)
+- **POST /api/update_task_status**: Updates the status of a task (done or not done).
 
-  - Request body:
-    ```json
-    {
-      "task": "Task Title",
-      "done": true/false,
-      "list_title": "List Title"
-    }
-    ```
 
 ## Frontend Features
 
@@ -129,8 +99,9 @@ The frontend, built using React, includes the following components:
    - Users can create new task lists and tasks using forms.
    - Task forms allow setting a due date, priority, and selecting the list the task belongs to.
 
-3. **Delete Task**:
+3. **Delete Tasks and Lists**:
    - Users can delete tasks from a list by clicking the "Delete" button next to each task.
+   - Users can delete lists by clicking the "Delete" Button next to the list name.
 
 ## Styling
 
