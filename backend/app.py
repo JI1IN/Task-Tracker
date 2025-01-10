@@ -12,7 +12,6 @@ class TaskTracker:
     def add_list(self, list_title):
         original_title = list_title
         index = 1
-        # Ensure unique list title
         while any(l['title'] == list_title for l in self.lists):
             list_title = f"{original_title} ({index})"
             index += 1

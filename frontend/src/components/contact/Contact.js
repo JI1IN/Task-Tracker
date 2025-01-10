@@ -3,9 +3,12 @@ import React from 'react';
 function Contact() {
 
     return (
-        <header className="bg-600 p-6 flex justify-start md:justify-center items-center min-h-screen w-full">
-            <h1 className="text-4xl font-bold">Contact Us</h1>
-        </header>
+        <div className="flex flex-col justify-center items-center min-h-screen text-center px-4">
+            <h1 className="text-4xl sm:text-5xl font-bold text-black mb-4">Contact Us</h1>
+            <p className="text-lg sm:text-gray-700 mb-6">
+                We would like to hear from you
+            </p>
+        </div>
     );
 }
 

@@ -6,6 +6,3 @@
     overflow: hidden;
     max-height: 0;
 }
-.task-list-content.max-h-screen {
-    max-height: 1000px;
-}

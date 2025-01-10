@@ -254,7 +254,7 @@ function TaskTracker() {
                         <h2 className="text-2xl font-semibold mb-4">Add New Task</h2>
                         <form onSubmit={addTask}>
                             {errorMessage && (
-                                <div className="text-red-600 text-center mb-4">{errorMessage}</div>
+                                <p className="text-red-600 text-center mb-4">{errorMessage}</p>
                             )}
                             <div className="mb-4">
                                 <label className="block mb-2">Task Name</label>
