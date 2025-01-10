@@ -25,7 +25,7 @@ function App() {
           </div>
           <div className="flex flex-1 items-center justify-center sm:justify-start">
             <div className="flex shrink-0 items-center font-bold sm:justify-start justify-center">
-              <Link to="/">Task-Master</Link>
+              <Link to="/"><img src="/image.png" alt="main_icon" className="hover:scale-75 ease-in duration-150 w-10 h-auto" ></img></Link>
             </div>
             <div className="hidden sm:block sm:ml-6">
               <div className="flex space-x-4">
