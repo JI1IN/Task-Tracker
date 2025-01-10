@@ -7,13 +7,8 @@ TaskMaster is a web-based application built using Flask and React to help users 
 - **Create Task Lists**: Users can create multiple task lists to organize their tasks.
 - **Add Tasks**: Users can add tasks with a title, due date, priority level (High, Medium, Low), and associate them with a specific task list.
 - **Task Status**: Tasks can be marked as completed or pending. 
-
-> **Comment:** *In process* (feature under development)
-
 - **Delete Tasks**: Users can delete tasks from any list.
-
-> **Comment:** *Delete lists in process* (feature under development)
-
+- **Delete Lists**: Users can delete lists that they deem as not needed.
 ## Tech Stack
 - **Backend**: Flask (Python web framework)
 - **Frontend**: React (JavaScript library for building user interfaces),
