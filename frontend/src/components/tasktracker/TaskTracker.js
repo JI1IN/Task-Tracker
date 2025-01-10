@@ -3,10 +3,11 @@ import axios from 'axios';
 import './tasktracker.css';
 
 function TaskTracker() {
+    const today = new Date().toISOString().split('T')[0];
     const [lists, setLists] = useState([]);
     const [newListTitle, setNewListTitle] = useState('');
     const [newTask, setNewTask] = useState('');
-    const [taskDueDate, setTaskDueDate] = useState('');
+    const [taskDueDate, setTaskDueDate] = useState(today);
     const [taskPriority, setTaskPriority] = useState('medium');
     const [selectedList, setSelectedList] = useState('');
     const [errorMessage, setErrorMessage] = useState('');
