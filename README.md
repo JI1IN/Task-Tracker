@@ -124,8 +124,9 @@ The frontend, built using React, includes the following components:
    - Users can create new task lists and tasks using forms.
    - Task forms allow setting a due date, priority, and selecting the list the task belongs to.
 
-3. **Delete Task**:
+3. **Delete Tasks and Lists**:
    - Users can delete tasks from a list by clicking the "Delete" button next to each task.
+   - Users can delete lists by clicking the "Delete" Button next to the list name.
 
 ## Styling
 
