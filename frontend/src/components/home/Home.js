@@ -24,10 +24,12 @@ function Home() {
                     List-Based Task<br/>Manager
                 </h2>
                 <p className="text-base sm:text-gray-700 leading-relaxed">
-                    Scared of losing your data?<br/>
-                    Just make a snapshot of your workspace and continue working.<br/>
-                    Share the workspaces with your co-workers, boss, etc.
+                    Welcome to our platform!
+                    <br/>
+                     Streamline your workflow and enhance collaboration.<br/>
+                     Organize your tasks and lists with TaskMaster.
                 </p>
+
             </div>
 
             <div
