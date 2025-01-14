@@ -68,38 +68,38 @@ function TaskTracker() {
     };
 
     const addTask = async (event) => {
-    event.preventDefault();
-    if (!newTask || !selectedList || !taskDueDate) {
-        setErrorMessage('Please fill in all fields.');
-        return;
-    }
-
-    const formattedDate = new Date(taskDueDate)
-        .toLocaleDateString('en-GB')
-        .split('/')
-        .reverse()
-        .join('.');
-
-    try {
-        const response = await axios.post('/api/add_task', {
-            task: newTask,
-            date: formattedDate,
-            priority: taskPriority,
-            list_title: selectedList,
-        });
-
-        if (response.data.success) {
-            setNewTask('');
-            setTaskDueDate(today);
-            await loadTodoLists();
-            setIsTaskModalOpen(false);
-        } else {
-            setErrorMessage('Failed to add task. Please try again.');
+        event.preventDefault();
+        if (!newTask || !selectedList || !taskDueDate) {
+            setErrorMessage('Please fill in all fields.');
+            return;
         }
-    } catch (error) {
-        setErrorMessage('Error adding task. Please try again.');
-    }
-};
+
+        const formattedDate = new Date(taskDueDate)
+            .toLocaleDateString('en-GB')
+            .split('/')
+            .reverse()
+            .join('.');
+
+        try {
+            const response = await axios.post('/api/add_task', {
+                task: newTask,
+                date: formattedDate,
+                priority: taskPriority,
+                list_title: selectedList,
+            });
+
+            if (response.data.success) {
+                setNewTask('');
+                setTaskDueDate(today);
+                await loadTodoLists();
+                setIsTaskModalOpen(false);
+            } else {
+                setErrorMessage('Failed to add task. Please try again.');
+            }
+        } catch (error) {
+            setErrorMessage('Error adding task. Please try again.');
+        }
+    };
 
     const toggleTaskDone = async (taskName, isDone, listTitle) => {
         try {
@@ -146,13 +146,14 @@ function TaskTracker() {
             setErrorMessage('Error deleting task. Please try again.');
         }
     };
+
     const closeTaskModal = () => {
-    setIsTaskModalOpen(false);
-    setNewTask('');
-    setTaskDueDate(today);
-    setTaskPriority('medium');
-    setErrorMessage('');
-};
+        setIsTaskModalOpen(false);
+        setNewTask('');
+        setTaskDueDate(today);
+        setTaskPriority('medium');
+        setErrorMessage('');
+    };
 
     const closeDetailsModal = () => {
         setIsDetailsModalOpen(false);
@@ -168,24 +169,24 @@ function TaskTracker() {
                 </div>
             )}
 
-            <div className="flex">
+            <div className="flex flex-col lg:flex-row">
                 {/* Sidebar */}
-                <aside className="w-1/4 bg-[#FFE0B5] p-4 shadow-md min-h-screen">
+                <aside className="w-full lg:w-1/4 bg-[#FFE0B5] p-4 shadow-md lg:min-h-screen">
                     <h2 className="text-2xl font-semibold mb-4">Task Lists</h2>
                     <ul>
                         {lists.map((list) => (
-                            <li key={list.title} className="flex justify-between items-center">
+                            <li key={list.title} className="flex justify-between items-center mb-2">
                                 <span
-                                    className={`cursor-pointer p-2 rounded-lg mb-2 ${
+                                    className={`cursor-pointer p-2 rounded-lg ${
                                         selectedList === list.title ? 'bg-blue-200' : 'bg-gray-200'
-                                    } hover:bg-blue-300`}
+                                    } hover:bg-blue-300 w-full block`}
                                     onClick={() => setSelectedList(list.title)}
                                 >
                                     {list.title}
                                 </span>
                                 <button
                                     onClick={() => deleteList(list.title)}
-                                    className="ml-2 text-red-500"
+                                    className="text-red-500 text-sm ml-2"
                                 >
                                     Delete
                                 </button>
@@ -210,7 +211,7 @@ function TaskTracker() {
                 </aside>
 
                 {/* Mainframe */}
-                <main className="w-3/4 bg-white p-6">
+                <main className="w-full lg:w-3/4 bg-white p-6">
                     <header className="mb-4">
                         <h1 className="text-3xl font-semibold">{selectedList || 'Select a List'}</h1>
                     </header>
@@ -313,17 +314,15 @@ function TaskTracker() {
                         </div>
                     )}
 
-                    {/* Task Details Modal */}
+                    {/* Task Details Modal (Subwindow) */}
                     {isDetailsModalOpen && selectedTask && (
                         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
                             <div className="modal-content bg-white p-6 rounded-lg w-96 shadow-lg">
                                 <h2 className="text-xl font-semibold mb-4">Task Details</h2>
-                                <div>
-                                    <strong>Name: </strong>{selectedTask.name}<br />
-                                    <strong>Due Date: </strong>{selectedTask.dueDate}<br />
-                                    <strong>Priority: </strong>{selectedTask.priority}<br />
-                                </div>
-                                <div className="flex justify-between mt-4">
+                                <p><strong>Task Name:</strong> {selectedTask.name}</p>
+                                <p><strong>Due Date:</strong> {selectedTask.dueDate}</p>
+                                <p><strong>Priority:</strong> {selectedTask.priority}</p>
+                                <div className="flex justify-end mt-4">
                                     <button
                                         onClick={closeDetailsModal}
                                         className="px-4 py-2 bg-[#B67A51] text-white rounded-lg hover:bg-[#A56843]"
