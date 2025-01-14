@@ -4,32 +4,33 @@ function Home() {
     return (
         <div>
             <div className="flex flex-col justify-center items-center min-h-screen text-center px-4">
-                <h1 className="text-4xl sm:text-5xl font-bold text-black mb-4">TaskMaster</h1>
-                <p className="text-lg sm:text-gray-700 mb-6">
-                    Stay Organized, Get Things Done.
-                </p>
-                <button
-                    className="px-4 py-2 bg-orange-400 text-white text-sm font-semibold rounded-md shadow-md hover:bg-orange-500">
-                    Get Started Now
-                </button>
+                <div className="bg-orange-300 text-black p-8 sm:p-16 rounded-lg shadow-xl w-full sm:w-1/2">
+                    <h1 className="text-4xl sm:text-6xl font-bold mb-6 sm:mb-8 break-words">
+                        TaskMaster
+                    </h1>
+                    <p className="text-lg sm:text-2xl sm:text-black mb-6">
+                        Stay Organized, Get Things Done.
+                    </p>
+                    <button
+                        className="px-8 py-4 bg-orange-400 text-white text-lg font-semibold rounded-md shadow-md hover:bg-orange-500">
+                        Get Started Now
+                    </button>
+                </div>
             </div>
-
-
             <div
                 className="flex flex-col justify-center items-start min-h-screen bg-orange-50 px-6 sm:px-32 py-10 sm:py-0">
-                <p className="text-orange-500 sm: font-semibold mb-4">
+                <p className="text-orange-500 sm:font-semibold mb-4">
                     Make lists, export them and enhance your workflow
                 </p>
                 <h2 className="text-3xl sm:text-3xl font-bold text-black leading-snug mb-6">
-                    List-Based Task<br/>Manager
+                    List-Based Task<br />Manager
                 </h2>
                 <p className="text-base sm:text-gray-700 leading-relaxed">
                     Welcome to our platform!
-                    <br/>
-                     Streamline your workflow and enhance collaboration.<br/>
-                     Organize your tasks and lists with TaskMaster.
+                    <br />
+                    Streamline your workflow and enhance collaboration.<br />
+                    Organize your tasks and lists with TaskMaster.
                 </p>
-
             </div>
 
             <div
@@ -38,11 +39,11 @@ function Home() {
                     Clear your mind
                 </p>
                 <h2 className="text-3xl sm:text-3xl font-bold text-black leading-snug mb-6">
-                    Get more done<br/>with less clutter
+                    Get more done<br />with less clutter
                 </h2>
                 <p className="text-base sm:text-gray-700 leading-relaxed">
-                    TaskMaster’s simple, clutter-free interface ensures<br/>
-                    you can focus solely on your tasks.<br/>
+                    TaskMaster’s simple, clutter-free interface ensures<br />
+                    you can focus solely on your tasks.<br />
                     Create, add or organize your list and tasks with just a few taps.
                 </p>
             </div>

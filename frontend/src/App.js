@@ -11,7 +11,7 @@ function App() {
   return (
   <Router>
   <div className="bg-orange-100 min-h-screen">
-    <Disclosure as="nav" className="bg-[#FFE0B5]">
+    <Disclosure as="nav" className="bg-[#FFE0B5] bg-opacity-80 sticky top-0 z-50">
       <div className="mx-auto max-w-7xl px-2 sm:px-6 lg:px-8">
         <div className="relative flex items-center justify-between h-16">
           <div className="absolute inset-y-0 left-0 flex items-center sm:hidden">

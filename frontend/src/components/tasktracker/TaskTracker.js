@@ -32,15 +32,20 @@ function TaskTracker() {
         try {
             const response = await axios.get('/api/get_lists');
             setLists(response.data);
+            if (!selectedList && response.data.length > 0) {
+                setSelectedList(response.data[0].title); // Set the first list as the default selected
+            } else if (response.data.length === 0) {
+                setSelectedList(''); // Reset to 'Select a List' if no lists available
+            }
         } catch (error) {
-            setErrorMessage("Error loading task lists. Please try again.");
+            setErrorMessage('Error loading task lists. Please try again.');
         }
     };
 
     const addList = async (event) => {
         event.preventDefault();
         if (!newListTitle) {
-            setErrorMessage("Please enter a list title.");
+            setErrorMessage('Please enter a list title.');
             return;
         }
 
@@ -49,7 +54,7 @@ function TaskTracker() {
             setNewListTitle('');
             await loadTodoLists();
         } catch (error) {
-            setErrorMessage("Error adding list. Please try again.");
+            setErrorMessage('Error adding list. Please try again.');
         }
     };
 
@@ -58,43 +63,43 @@ function TaskTracker() {
             await axios.post('/api/delete_list', { title: listTitle });
             await loadTodoLists();
         } catch (error) {
-            setErrorMessage("Error deleting list. Please try again.");
+            setErrorMessage('Error deleting list. Please try again.');
         }
     };
 
     const addTask = async (event) => {
-        event.preventDefault();
-        if (!newTask || !selectedList || !taskDueDate) {
-            setErrorMessage("Please fill in all fields.");
-            return;
+    event.preventDefault();
+    if (!newTask || !selectedList || !taskDueDate) {
+        setErrorMessage('Please fill in all fields.');
+        return;
+    }
+
+    const formattedDate = new Date(taskDueDate)
+        .toLocaleDateString('en-GB')
+        .split('/')
+        .reverse()
+        .join('.');
+
+    try {
+        const response = await axios.post('/api/add_task', {
+            task: newTask,
+            date: formattedDate,
+            priority: taskPriority,
+            list_title: selectedList,
+        });
+
+        if (response.data.success) {
+            setNewTask('');
+            setTaskDueDate(today);
+            await loadTodoLists();
+            setIsTaskModalOpen(false);
+        } else {
+            setErrorMessage('Failed to add task. Please try again.');
         }
-
-        const formattedDate = new Date(taskDueDate)
-            .toLocaleDateString('en-GB')
-            .split('/')
-            .reverse()
-            .join('.');
-
-        try {
-            const response = await axios.post('/api/add_task', {
-                task: newTask,
-                date: formattedDate,
-                priority: taskPriority,
-                list_title: selectedList,
-            });
-
-            if (response.data.success) {
-                setNewTask('');
-                setTaskDueDate('');
-                await loadTodoLists();
-                closeTaskModal();
-            } else {
-                setErrorMessage('Failed to add task. Please try again.');
-            }
-        } catch (error) {
-            setErrorMessage('Error adding task. Please try again.');
-        }
-    };
+    } catch (error) {
+        setErrorMessage('Error adding task. Please try again.');
+    }
+};
 
     const toggleTaskDone = async (taskName, isDone, listTitle) => {
         try {
@@ -115,7 +120,7 @@ function TaskTracker() {
 
             setLists(updatedLists);
         } catch (error) {
-            console.error('Error updating task status:', error.response ? error.response.data : error.message);
+            setErrorMessage('Error updating task status.');
         }
     };
 
@@ -138,18 +143,16 @@ function TaskTracker() {
             await axios.post('/api/delete_task', { title: listTitle, task: taskName });
             await loadTodoLists();
         } catch (error) {
-            setErrorMessage(error.message || "Error deleting task. Please try again.");
+            setErrorMessage('Error deleting task. Please try again.');
         }
     };
-
     const closeTaskModal = () => {
-        setIsTaskModalOpen(false);
-        setNewTask('');
-        setTaskDueDate('');
-        setTaskPriority('medium');
-        setSelectedList('');
-        setErrorMessage('');
-    };
+    setIsTaskModalOpen(false);
+    setNewTask('');
+    setTaskDueDate(today);
+    setTaskPriority('medium');
+    setErrorMessage('');
+};
 
     const closeDetailsModal = () => {
         setIsDetailsModalOpen(false);
@@ -157,195 +160,182 @@ function TaskTracker() {
     };
 
     return (
-        <div className="min-h-screen">
-            <header className="p-6 flex justify-center items-center">
-                <h1 className="text-4xl font-semibold">Task Tracker</h1>
-            </header>
+        <div className="min-h-screen bg-orange-100">
+            {/* Error Message */}
+            {errorMessage && (
+                <div className="bg-red-500 text-white p-4 rounded-lg mb-4">
+                    <strong>Error:</strong> {errorMessage}
+                </div>
+            )}
 
-            <div className="task-container max-w-4xl mx-auto p-6">
-                <section className="form-section mb-8">
-                    <form className="list-form bg-white p-6 rounded-lg shadow-lg" onSubmit={addList}>
+            <div className="flex">
+                {/* Sidebar */}
+                <aside className="w-1/4 bg-[#FFE0B5] p-4 shadow-md min-h-screen">
+                    <h2 className="text-2xl font-semibold mb-4">Task Lists</h2>
+                    <ul>
+                        {lists.map((list) => (
+                            <li key={list.title} className="flex justify-between items-center">
+                                <span
+                                    className={`cursor-pointer p-2 rounded-lg mb-2 ${
+                                        selectedList === list.title ? 'bg-blue-200' : 'bg-gray-200'
+                                    } hover:bg-blue-300`}
+                                    onClick={() => setSelectedList(list.title)}
+                                >
+                                    {list.title}
+                                </span>
+                                <button
+                                    onClick={() => deleteList(list.title)}
+                                    className="ml-2 text-red-500"
+                                >
+                                    Delete
+                                </button>
+                            </li>
+                        ))}
+                    </ul>
+                    <form className="mt-4" onSubmit={addList}>
                         <input
                             type="text"
                             value={newListTitle}
                             onChange={(e) => setNewListTitle(e.target.value)}
                             placeholder="New List Title"
-                            className="px-4 py-3 mb-4 w-full border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                            className="w-full px-3 py-2 border border-gray-300 rounded-lg mb-2"
                         />
                         <button
                             type="submit"
-                            className="px-6 py-3 bg-[#F8C794] text-black-900 rounded-lg hover:bg-[#F8C794] hover:text-black-900 transition duration-300"
+                            className="w-full px-3 py-2 bg-[#D4A57A] text-white rounded-lg hover:bg-[#C28F61]"
                         >
                             Add List
                         </button>
                     </form>
-                </section>
+                </aside>
 
-                <section className="task-list-section mt-8">
-                    <div className="task-list-container bg-white p-6 rounded-lg shadow-lg">
-                        <ul className="task-list">
-                            {lists.map((list) => (
-                                <li key={list.title} className="mb-6">
-                                    <div
-                                        className="list-header font-semibold text-xl flex justify-between items-center">
-                                        <span onClick={() => toggleListExpand(list.title)} className="cursor-pointer">
-                                            {list.title}
-                                        </span>
-                                        <button
-                                            onClick={() => deleteList(list.title)}
-                                            className="px-4 py-2 bg-[#F8C794] text-black-900 rounded-lg hover:bg-[#F8C794] hover:text-black-900 transition duration-300 text-sm"
-                                        >
-                                            Delete
-                                        </button>
-                                    </div>
-                                    {list.expanded && (
-                                        <ul className="mt-4 space-y-4">
-                                            {list.tasks.map((task) => (
-                                                <li
-                                                    key={task.name}
-                                                    className={`task-list-item p-4 rounded-lg border ${
-                                                        task.done ? 'bg-green-100 line-through' : 'bg-white'
-                                                    } hover:shadow-lg transition duration-300`}
-                                                >
-                                                    <div className="flex justify-between items-center">
-                                                        <div className="flex items-center">
-                                                            <input
-                                                                type="checkbox"
-                                                                checked={task.done}
-                                                                onChange={(e) => toggleTaskDone(task.name, e.target.checked, list.title)}
-                                                                className="mr-4"
-                                                            />
-                                                            <span
-                                                                className="cursor-pointer text-lg text-gray-800 transition-transform duration-300 transform hover:scale-105"
-                                                                onClick={() => handleShowDetails(task)}
-                                                            >
-                                                                {task.name}
-                                                            </span>
-                                                        </div>
-                                                        <div>
-                                                            <button
-                                                                onClick={() => handleDelete(list.title, task.name)}
-                                                                className="px-4 py-2 bg-[#F8C794] text-black-900 rounded-lg hover:bg-[#F8C794] hover:text-black-900 transition duration-300 text-sm"
-                                                            >
-                                                                Delete
-                                                            </button>
-                                                        </div>
-                                                    </div>
-                                                </li>
-                                            ))}
-                                        </ul>
-                                    )}
-                                </li>
-                            ))}
-                        </ul>
-                    </div>
-                </section>
-            </div>
+                {/* Mainframe */}
+                <main className="w-3/4 bg-white p-6">
+                    <header className="mb-4">
+                        <h1 className="text-3xl font-semibold">{selectedList || 'Select a List'}</h1>
+                    </header>
 
-            <button
-                onClick={() => setIsTaskModalOpen(true)}
-                className="fixed bottom-6 right-6 px-6 py-4 bg-[#F8C794] text-black-900 rounded-full shadow-xl hover:bg-[#F8C794] hover:text-black-900 transition duration-300"
-            >
-                + Add Task
-            </button>
-
-            {isTaskModalOpen && (
-                <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
-                    <div className="bg-white p-8 rounded-lg w-11/12 sm:w-9/12 md:w-1/3 shadow-lg">
-                        <h2 className="text-2xl font-semibold mb-4">Add New Task</h2>
-                        <form onSubmit={addTask}>
-                            {errorMessage && (
-                                <p className="text-red-600 text-center mb-4">{errorMessage}</p>
-                            )}
+                    {selectedList && (
+                        <div>
+                            {/* Add Task Button */}
                             <div className="mb-4">
-                                <label className="block mb-2">Task Name</label>
-                                <input
-                                    type="text"
-                                    value={newTask}
-                                    onChange={(e) => setNewTask(e.target.value)}
-                                    className="px-4 py-3 border border-gray-300 rounded-lg w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
-                                />
-                            </div>
-                            <div className="mb-4">
-                                <label className="block mb-2">Due Date</label>
-                                <input
-                                    type="date"
-                                    value={taskDueDate}
-                                    onChange={(e) => setTaskDueDate(e.target.value)}
-                                    className="px-4 py-3 border border-gray-300 rounded-lg w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
-                                />
-                            </div>
-                            <div className="mb-4">
-                                <label className="block mb-2">Priority</label>
-                                <select
-                                    value={taskPriority}
-                                    onChange={(e) => setTaskPriority(e.target.value)}
-                                    className="px-4 py-3 border border-gray-300 rounded-lg w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
-                                >
-                                    <option value="medium">Medium</option>
-                                    <option value="high">High</option>
-                                    <option value="low">Low</option>
-                                </select>
-                            </div>
-                            <div className="mb-4">
-                                <label className="block mb-2">Select List</label>
-                                <select
-                                    value={selectedList}
-                                    onChange={(e) => setSelectedList(e.target.value)}
-                                    className="px-4 py-3 border border-gray-300 rounded-lg w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
-                                >
-                                    <option value="">Select a list</option>
-                                    {lists.map((list) => (
-                                        <option key={list.title} value={list.title}>
-                                            {list.title}
-                                        </option>
-                                    ))}
-                                </select>
-                            </div>
-                            <div className="flex justify-between mt-4">
                                 <button
-                                    type="submit"
-                                    className="px-4 py-2 bg-[#F8C794] text-black-900 rounded-lg hover:bg-[#F8C794] hover:text-black-900 transition duration-300"
+                                    onClick={() => setIsTaskModalOpen(true)}
+                                    className="px-4 py-2 bg-[#D4A57A] text-white rounded-lg hover:bg-[#C28F61]"
                                 >
                                     Add Task
                                 </button>
-                                <button
-                                    type="button"
-                                    onClick={closeTaskModal}
-                                    className="px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition duration-300"
-                                >
-                                    Close
-                                </button>
                             </div>
-                        </form>
-                    </div>
-                </div>
-            )}
 
-            {isDetailsModalOpen && selectedTask && (
-                <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
-                    <div className="bg-white p-8 rounded-lg w-11/12 sm:w-9/12 md:w-1/3 shadow-lg">
-                        <h2 className="text-2xl font-semibold mb-4">Task Details</h2>
-                        <div className="mb-4">
-                            <strong>Task Name:</strong> <span>{selectedTask.name}</span>
+                            {lists
+                                .find((list) => list.title === selectedList)
+                                ?.tasks.map((task) => (
+                                    <div
+                                        key={task.name}
+                                        className={`p-4 mb-2 border rounded-lg ${
+                                            task.done ? 'bg-green-100 line-through' : 'bg-white'
+                                        }`}
+                                    >
+                                        <div className="flex justify-between items-center">
+                                            <div className="flex items-center">
+                                                <input
+                                                    type="checkbox"
+                                                    checked={task.done}
+                                                    onChange={(e) => toggleTaskDone(task.name, e.target.checked, selectedList)}
+                                                    className="mr-4"
+                                                />
+                                                <span
+                                                    className="cursor-pointer text-lg text-gray-800 transition-transform duration-300 transform hover:scale-105"
+                                                    onClick={() => handleShowDetails(task)}
+                                                >
+                                                    {task.name}
+                                                </span>
+                                            </div>
+                                            <div>
+                                                <button
+                                                    onClick={() => handleDelete(selectedList, task.name)}
+                                                    className="px-4 py-2 bg-[#D4A57A] text-white rounded-lg hover:bg-[#C28F61] transition duration-300 text-sm"
+                                                >
+                                                    Delete
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                ))}
                         </div>
-                        <div className="mb-4">
-                            <strong>Due Date:</strong> <span>{selectedTask.dueDate}</span>
+                    )}
+
+                    {/* Task Modal (Subwindow) */}
+                    {isTaskModalOpen && (
+                        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+                            <div className="modal-content bg-white p-6 rounded-lg w-96 shadow-lg">
+                                <h2 className="text-xl font-semibold mb-4">Add Task</h2>
+                                <form onSubmit={addTask}>
+                                    <input
+                                        type="text"
+                                        value={newTask}
+                                        onChange={(e) => setNewTask(e.target.value)}
+                                        placeholder="Task Name"
+                                        className="w-full px-3 py-2 mb-4 border border-gray-300 rounded-lg"
+                                    />
+                                    <input
+                                        type="date"
+                                        value={taskDueDate}
+                                        onChange={(e) => setTaskDueDate(e.target.value)}
+                                        className="w-full px-3 py-2 mb-4 border border-gray-300 rounded-lg"
+                                    />
+                                    <select
+                                        value={taskPriority}
+                                        onChange={(e) => setTaskPriority(e.target.value)}
+                                        className="w-full px-3 py-2 mb-4 border border-gray-300 rounded-lg"
+                                    >
+                                        <option value="low">Low</option>
+                                        <option value="medium">Medium</option>
+                                        <option value="high">High</option>
+                                    </select>
+                                    <div className="flex justify-between">
+                                        <button
+                                            type="button"
+                                            onClick={closeTaskModal}
+                                            className="px-4 py-2 bg-[#B67A51] text-white rounded-lg hover:bg-[#A56843]"
+                                        >
+                                            Cancel
+                                        </button>
+                                        <button
+                                            type="submit"
+                                            className="px-4 py-2 bg-[#D4A57A] text-white rounded-lg hover:bg-[#C28F61]"
+                                        >
+                                            Add Task
+                                        </button>
+                                    </div>
+                                </form>
+                            </div>
                         </div>
-                        <div className="mb-4">
-                            <strong>Priority:</strong> <span>{selectedTask.priority}</span>
+                    )}
+
+                    {/* Task Details Modal */}
+                    {isDetailsModalOpen && selectedTask && (
+                        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+                            <div className="modal-content bg-white p-6 rounded-lg w-96 shadow-lg">
+                                <h2 className="text-xl font-semibold mb-4">Task Details</h2>
+                                <div>
+                                    <strong>Name: </strong>{selectedTask.name}<br />
+                                    <strong>Due Date: </strong>{selectedTask.dueDate}<br />
+                                    <strong>Priority: </strong>{selectedTask.priority}<br />
+                                </div>
+                                <div className="flex justify-between mt-4">
+                                    <button
+                                        onClick={closeDetailsModal}
+                                        className="px-4 py-2 bg-[#B67A51] text-white rounded-lg hover:bg-[#A56843]"
+                                    >
+                                        Close
+                                    </button>
+                                </div>
+                            </div>
                         </div>
-                        <div className="flex justify-between mt-4">
-                            <button
-                                onClick={closeDetailsModal}
-                                className="px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition duration-300"
-                            >
-                                Close
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            )}
+                    )}
+                </main>
+            </div>
         </div>
     );
 }
