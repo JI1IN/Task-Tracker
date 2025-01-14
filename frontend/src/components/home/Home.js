@@ -17,20 +17,31 @@ function Home() {
                     </button>
                 </div>
             </div>
-            <div
-                className="flex flex-col justify-center items-start min-h-screen bg-orange-50 px-6 sm:px-32 py-10 sm:py-0">
-                <p className="text-orange-500 sm:font-semibold mb-4">
-                    Make lists, export them and enhance your workflow
-                </p>
-                <h2 className="text-3xl sm:text-3xl font-bold text-black leading-snug mb-6">
-                    List-Based Task<br />Manager
-                </h2>
-                <p className="text-base sm:text-gray-700 leading-relaxed">
-                    Welcome to our platform!
-                    <br />
-                    Streamline your workflow and enhance collaboration.<br />
-                    Organize your tasks and lists with TaskMaster.
-                </p>
+            <div className="flex flex-col sm:flex-row justify-between items-center min-h-screen bg-orange-50 px-6 sm:px-32 py-10 sm:py-0">
+                {/* Left Side - Text */}
+                <div className="flex flex-col justify-center items-start sm:w-1/2 mb-6 sm:mb-0">
+                    <p className="text-orange-500 sm:font-semibold mb-4">
+                        Make lists, export them and enhance your workflow
+                    </p>
+                    <h2 className="text-3xl sm:text-3xl font-bold text-black leading-snug mb-6">
+                        List-Based Task<br />Manager
+                    </h2>
+                    <p className="text-base sm:text-gray-700 leading-relaxed">
+                        Welcome to our platform!
+                        <br />
+                        Streamline your workflow and enhance collaboration.<br />
+                        Organize your tasks and lists with TaskMaster.
+                    </p>
+                </div>
+
+
+                <div className="sm:w-1/2">
+                    <img
+                        src="/Preview.png"
+                        alt="TaskMaster"
+                        className="w-full h-auto object-cover rounded-lg shadow-md"
+                    />
+                </div>
             </div>
 
             <div
