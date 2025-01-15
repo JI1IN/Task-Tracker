@@ -177,9 +177,7 @@ function TaskTracker() {
                         {lists.map((list) => (
                             <li key={list.title} className="flex justify-between items-center mb-2">
                                 <span
-                                    className={`cursor-pointer p-2 rounded-lg ${
-                                        selectedList === list.title ? 'bg-blue-200' : 'bg-gray-200'
-                                    } hover:bg-blue-300 w-full block`}
+                                   className={`cursor-pointer p-2 rounded-lg bg-orange-100 hover:bg-[#D4A57A] w-full block`}
                                     onClick={() => setSelectedList(list.title)}
                                 >
                                     {list.title}
