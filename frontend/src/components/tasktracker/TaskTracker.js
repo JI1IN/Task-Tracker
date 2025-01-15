@@ -317,15 +317,15 @@ function TaskTracker() {
                     {/* Task Details Modal (Subwindow) */}
                     {isDetailsModalOpen && selectedTask && (
                         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
-                            <div className="modal-content bg-white p-6 rounded-lg w-96 shadow-lg">
+                            <div className="modal-content bg-[#F8C794] p-6 rounded-lg w-96 shadow-lg">
                                 <h2 className="text-xl font-semibold mb-4">Task Details</h2>
-                                <p><strong>Task Name:</strong> {selectedTask.name}</p>
-                                <p><strong>Due Date:</strong> {selectedTask.dueDate}</p>
-                                <p><strong>Priority:</strong> {selectedTask.priority}</p>
+                                <p><strong>Task Name: {selectedTask.name}</strong></p>
+                                <p><strong>Due Date: {selectedTask.dueDate}</strong></p>
+                                <p><strong>Priority: {selectedTask.priority}</strong></p>
                                 <div className="flex justify-end mt-4">
                                     <button
                                         onClick={closeDetailsModal}
-                                        className="px-4 py-2 bg-[#B67A51] text-white rounded-lg hover:bg-[#A56843]"
+                                        className="px-4 py-2 bg-[#B67A51] text-white rounded-lg hover:bg-[#A56843] transition duration-150"
                                     >
                                         Close
                                     </button>
