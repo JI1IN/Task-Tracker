@@ -171,20 +171,22 @@ function TaskTracker() {
 
             <div className="flex flex-col lg:flex-row">
                 {/* Sidebar */}
-                <aside className="w-full lg:w-1/4 bg-[#FFE0B5] p-4 shadow-md lg:min-h-screen">
+                <aside className="w-full lg:w-1/5 bg-[#FFE0B5] p-4 shadow-md lg:min-h-screen">
+
                     <h2 className="text-2xl font-semibold mb-4">Task Lists</h2>
+
                     <ul>
                         {lists.map((list) => (
                             <li key={list.title} className="flex justify-between items-center mb-2">
                                 <span
-                                   className={`cursor-pointer p-2 rounded-lg bg-orange-100 hover:bg-[#D4A57A] w-full block`}
+                                   className={`cursor-pointer p-2 rounded-lg bg-orange-100 hover:bg-[#D4A57A] w-full block transition-colors duration-300 `}
                                     onClick={() => setSelectedList(list.title)}
                                 >
                                     {list.title}
                                 </span>
                                 <button
                                     onClick={() => deleteList(list.title)}
-                                    className="text-red-500 text-sm ml-2"
+                                    className="text-red-500 bg-white ml-2  px-3 py-2 rounded-3xl hover:bg-gray-400 transition duration-150 text-sm"
                                 >
                                     Delete
                                 </button>
@@ -201,7 +203,7 @@ function TaskTracker() {
                         />
                         <button
                             type="submit"
-                            className="w-full px-3 py-2 bg-[#D4A57A] text-white rounded-lg hover:bg-[#C28F61]"
+                            className="w-full px-3 py-2 bg-[#D4A57A] text-white rounded-lg hover:bg-[#C28F61] ransition duration-150 text-sm"
                         >
                             Add List
                         </button>
@@ -209,7 +211,7 @@ function TaskTracker() {
                 </aside>
 
                 {/* Mainframe */}
-                <main className="w-full lg:w-3/4 bg-white p-6">
+                <main className="w-full lg:w-4/5 bg-[#FFF2D7] p-6">
                     <header className="mb-4">
                         <h1 className="text-3xl font-semibold">{selectedList || 'Select a List'}</h1>
                     </header>
@@ -220,7 +222,7 @@ function TaskTracker() {
                             <div className="mb-4">
                                 <button
                                     onClick={() => setIsTaskModalOpen(true)}
-                                    className="px-4 py-2 bg-[#D4A57A] text-white rounded-lg hover:bg-[#C28F61]"
+                                    className="px-4 py-2 bg-white rounded-3xl hover:bg-gray-400 transition duration-150 text-sm"
                                 >
                                     Add Task
                                 </button>
@@ -231,8 +233,8 @@ function TaskTracker() {
                                 ?.tasks.map((task) => (
                                     <div
                                         key={task.name}
-                                        className={`p-4 mb-2 border rounded-lg ${
-                                            task.done ? 'bg-green-100 line-through' : 'bg-white'
+                                        className={`p-4 mb-2 rounded-3xl border-b-4 border-gray-400 ${
+                                            task.done ? 'bg-green-100 line-through' : 'bg-[#FFE0B5]'
                                         }`}
                                     >
                                         <div className="flex justify-between items-center">
