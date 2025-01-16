@@ -171,29 +171,11 @@ function TaskTracker() {
 
             <div className="flex flex-col lg:flex-row">
                 {/* Sidebar */}
+
                 <aside className="w-full lg:w-1/5 bg-[#FFE0B5] p-4 shadow-md lg:min-h-screen">
 
                     <h2 className="text-2xl font-semibold mb-4">Task Lists</h2>
-
-                    <ul>
-                        {lists.map((list) => (
-                            <li key={list.title} className="flex justify-between items-center mb-2">
-                                <span
-                                   className={`cursor-pointer p-2 rounded-lg bg-orange-100 hover:bg-[#D4A57A] w-full block transition-colors duration-300 `}
-                                    onClick={() => setSelectedList(list.title)}
-                                >
-                                    {list.title}
-                                </span>
-                                <button
-                                    onClick={() => deleteList(list.title)}
-                                    className="text-red-500 bg-white ml-2  px-3 py-2 rounded-3xl hover:bg-gray-400 transition duration-150 text-sm"
-                                >
-                                    Delete
-                                </button>
-                            </li>
-                        ))}
-                    </ul>
-                    <form className="mt-4" onSubmit={addList}>
+                    <form className="mt-4 mb-4" onSubmit={addList}>
                         <input
                             type="text"
                             value={newListTitle}
@@ -208,6 +190,26 @@ function TaskTracker() {
                             Add List
                         </button>
                     </form>
+
+                    <ul>
+                        {lists.map((list) => (
+                            <li key={list.title} className="flex justify-between items-center mb-2">
+                                <span
+                                    className={`cursor-pointer p-2 rounded-lg bg-orange-100 hover:bg-[#D4A57A] w-full block transition-colors duration-300 `}
+                                    onClick={() => setSelectedList(list.title)}
+                                >
+                                    {list.title}
+                                </span>
+                                <button
+                                    onClick={() => deleteList(list.title)}
+                                    className="text-red-500 bg-white ml-2  px-3 py-2 rounded-3xl hover:bg-gray-400 transition duration-150 text-sm"
+                                >
+                                    Delete
+                                </button>
+                            </li>
+                        ))}
+                    </ul>
+
                 </aside>
 
                 {/* Mainframe */}
@@ -224,7 +226,7 @@ function TaskTracker() {
                                     onClick={() => setIsTaskModalOpen(true)}
                                     className="px-4 py-2 bg-white rounded-3xl hover:bg-gray-400 transition duration-150 text-sm"
                                 >
-                                    Add Task
+                                Add Task
                                 </button>
                             </div>
 
@@ -322,10 +324,10 @@ function TaskTracker() {
                                 <p><strong>Task Name: {selectedTask.name}</strong></p>
                                 <p><strong>Due Date: {selectedTask.dueDate}</strong></p>
                                 <p><strong>Priority: {selectedTask.priority}</strong></p>
-                                <div className="flex justify-end mt-4">
+                                <div className="flex justify-start mt-8">
                                     <button
                                         onClick={closeDetailsModal}
-                                        className="px-4 py-2 bg-[#B67A51] text-white rounded-lg hover:bg-[#A56843] transition duration-150"
+                                        className="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-700 transition duration-150"
                                     >
                                         Close
                                     </button>
