@@ -5,7 +5,8 @@ import Home from './components/home/Home';
 import About from './components/about/About';
 import Contact from './components/contact/Contact';
 import TaskTracker from './components/tasktracker/TaskTracker';
-
+import Login from './components/login/login';
+import Register from './components/register/register';
 
 function App() {
   return (
@@ -41,6 +42,13 @@ function App() {
                 <Link to="/contact" className="hover:underline px-3 py-2 text-sm font-medium">
                   Contact
                 </Link>
+                <Link to="/login" className="hover:underline px-3 py-2 text-sm font-medium">
+                  Login
+                </Link>
+                <Link to="/register" className="hover:underline px-3 py-2 text-sm font-medium">
+                  Register
+                </Link>
+                
               </div>
             </div>
           </div>
@@ -94,6 +102,8 @@ function App() {
       <Route path="/contact" element={<Contact/>}/>
       <Route path="/about" element={<About/>}/>
       <Route path="/tasktracker" element={<TaskTracker/>}/>
+      <Route path="/login" element={<Login/>}/>
+      <Route path="/register" element={<Register/>}/>
     </Routes>
 
     <footer className="bg-gray-800 text-gray-300 py-6">
