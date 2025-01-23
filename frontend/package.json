@@ -41,12 +41,15 @@
       "last 1 safari version"
     ]
   },
-  "proxy": "http://127.0.0.1:5000/",
   "devDependencies": {
     "@headlessui/react": "^2.2.0",
     "@heroicons/react": "^2.2.0",
     "autoprefixer": "^10.4.20",
     "postcss": "^8.4.49",
     "tailwindcss": "^3.4.16"
+  },
+  "options": {
+      "allowedHosts": ["all"],
+      "proxy": "http://127.0.0.1:5000/"
   }
 }
