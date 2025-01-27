@@ -33,9 +33,9 @@ function TaskTracker() {
             const response = await axios.get('/api/get_lists');
             setLists(response.data);
             if (!selectedList && response.data.length > 0) {
-                setSelectedList(response.data[0].title); // Set the first list as the default selected
+                setSelectedList(response.data[0].title);
             } else if (response.data.length === 0) {
-                setSelectedList(''); // Reset to 'Select a List' if no lists available
+                setSelectedList('');
             }
         } catch (error) {
             setErrorMessage('Error loading task lists. Please try again.');
