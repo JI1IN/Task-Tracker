@@ -1,8 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import '../stylesheet.css'
+import '../stylesheet.css';
 
 function TaskTracker() {
+    const API_BASE_URL = process.env.REACT_APP_API_BASE_URL || 'http://localhost:5000';
+
     const today = new Date().toISOString().split('T')[0];
     const [lists, setLists] = useState([]);
     const [newListTitle, setNewListTitle] = useState('');
@@ -30,7 +32,7 @@ function TaskTracker() {
 
     const loadTodoLists = async () => {
         try {
-            const response = await axios.get('/api/get_lists');
+            const response = await axios.get(`${API_BASE_URL}/get_lists`);
             setLists(response.data);
             if (!selectedList && response.data.length > 0) {
                 setSelectedList(response.data[0].title);
@@ -38,6 +40,7 @@ function TaskTracker() {
                 setSelectedList('');
             }
         } catch (error) {
+            console.error('Error loading task lists:', error.response?.data || error.message);
             setErrorMessage('Error loading task lists. Please try again.');
         }
     };
@@ -50,19 +53,21 @@ function TaskTracker() {
         }
 
         try {
-            await axios.post('/api/add_list', { title: newListTitle });
+            await axios.post(`${API_BASE_URL}/add_list`, { title: newListTitle });
             setNewListTitle('');
             await loadTodoLists();
         } catch (error) {
+            console.error('Error adding list:', error.response?.data || error.message);
             setErrorMessage('Error adding list. Please try again.');
         }
     };
 
     const deleteList = async (listTitle) => {
         try {
-            await axios.post('/api/delete_list', { title: listTitle });
+            await axios.post(`${API_BASE_URL}/delete_list`, { title: listTitle });
             await loadTodoLists();
         } catch (error) {
+            console.error('Error deleting list:', error.response?.data || error.message);
             setErrorMessage('Error deleting list. Please try again.');
         }
     };
@@ -78,10 +83,10 @@ function TaskTracker() {
             .toLocaleDateString('en-GB')
             .split('/')
             .reverse()
-            .join('.');
+            .join('-');
 
         try {
-            const response = await axios.post('/api/add_task', {
+            const response = await axios.post(`${API_BASE_URL}/add_task`, {
                 task: newTask,
                 date: formattedDate,
                 priority: taskPriority,
@@ -97,13 +102,14 @@ function TaskTracker() {
                 setErrorMessage('Failed to add task. Please try again.');
             }
         } catch (error) {
+            console.error('Error adding task:', error.response?.data || error.message);
             setErrorMessage('Error adding task. Please try again.');
         }
     };
 
     const toggleTaskDone = async (taskName, isDone, listTitle) => {
         try {
-            await axios.post('/api/update_task_status', {
+            await axios.post(`${API_BASE_URL}/update_task_status`, {
                 task: taskName,
                 done: isDone,
                 list_title: listTitle,
@@ -120,29 +126,24 @@ function TaskTracker() {
 
             setLists(updatedLists);
         } catch (error) {
+            console.error('Error updating task status:', error.response?.data || error.message);
             setErrorMessage('Error updating task status.');
         }
     };
-
-    const toggleListExpand = (listTitle) => {
-        setLists(lists.map((list) =>
-            list.title === listTitle ? { ...list, expanded: !list.expanded } : list
-        ));
-    };
-
     const handleShowDetails = (task) => {
         setSelectedTask({
             ...task,
-            dueDate: task.dueDate || task.date
+            dueDate: task.dueDate || task.date,
         });
         setIsDetailsModalOpen(true);
     };
 
     const handleDelete = async (listTitle, taskName) => {
         try {
-            await axios.post('/api/delete_task', { title: listTitle, task: taskName });
+            await axios.post(`${API_BASE_URL}/delete_task`, { title: listTitle, task: taskName });
             await loadTodoLists();
         } catch (error) {
+            console.error('Error deleting task:', error.response?.data || error.message);
             setErrorMessage('Error deleting task. Please try again.');
         }
     };
@@ -162,7 +163,6 @@ function TaskTracker() {
 
     return (
         <div className="min-h-screen bg-orange-100">
-            {/* Error Message */}
             {errorMessage && (
                 <div className="bg-red-500 text-white p-4 rounded-lg mb-4">
                     <strong>Error:</strong> {errorMessage}
@@ -170,10 +170,7 @@ function TaskTracker() {
             )}
 
             <div className="flex flex-col lg:flex-row">
-                {/* Sidebar */}
-
                 <aside className="w-full lg:w-1/5 bg-[#FFE0B5] p-4 shadow-md lg:min-h-screen">
-
                     <h2 className="text-2xl font-semibold mb-4">Task Lists</h2>
                     <form className="mt-4 mb-4" onSubmit={addList}>
                         <input
@@ -185,7 +182,7 @@ function TaskTracker() {
                         />
                         <button
                             type="submit"
-                            className="w-full px-3 py-2 bg-[#D4A57A] text-white rounded-lg hover:bg-[#C28F61] ransition duration-150 text-sm"
+                            className="w-full px-3 py-2 bg-[#D4A57A] text-white rounded-lg hover:bg-[#C28F61] transition duration-150 text-sm"
                         >
                             Add List
                         </button>
@@ -195,24 +192,22 @@ function TaskTracker() {
                         {lists.map((list) => (
                             <li key={list.title} className="flex justify-between items-center mb-2">
                                 <span
-                                    className={`cursor-pointer p-2 rounded-lg bg-orange-100 hover:bg-[#D4A57A] w-full block transition-colors duration-300 `}
+                                    className={`cursor-pointer p-2 rounded-lg bg-orange-100 hover:bg-[#D4A57A] w-full block transition-colors duration-300`}
                                     onClick={() => setSelectedList(list.title)}
                                 >
                                     {list.title}
                                 </span>
                                 <button
                                     onClick={() => deleteList(list.title)}
-                                    className="text-red-500 bg-white ml-2  px-3 py-2 rounded-3xl hover:bg-gray-400 transition duration-150 text-sm"
+                                    className="text-red-500 bg-white ml-2 px-3 py-2 rounded-3xl hover:bg-gray-400 transition duration-150 text-sm"
                                 >
                                     Delete
                                 </button>
                             </li>
                         ))}
                     </ul>
-
                 </aside>
 
-                {/* Mainframe */}
                 <main className="w-full lg:w-4/5 bg-[#FFF2D7] p-6">
                     <header className="mb-4">
                         <h1 className="text-3xl font-semibold">{selectedList || 'Select a List'}</h1>
@@ -220,13 +215,12 @@ function TaskTracker() {
 
                     {selectedList && (
                         <div>
-                            {/* Add Task Button */}
                             <div className="mb-4">
                                 <button
                                     onClick={() => setIsTaskModalOpen(true)}
                                     className="px-4 py-2 bg-white rounded-3xl hover:bg-gray-400 transition duration-150 text-sm"
                                 >
-                                Add Task
+                                    Add Task
                                 </button>
                             </div>
 
@@ -268,7 +262,6 @@ function TaskTracker() {
                         </div>
                     )}
 
-                    {/* Task Modal (Subwindow) */}
                     {isTaskModalOpen && (
                         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
                             <div className="modal-content bg-white p-6 rounded-lg w-96 shadow-lg">
@@ -316,14 +309,13 @@ function TaskTracker() {
                         </div>
                     )}
 
-                    {/* Task Details Modal (Subwindow) */}
                     {isDetailsModalOpen && selectedTask && (
                         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
                             <div className="modal-content bg-[#F8C794] p-6 rounded-lg w-96 shadow-lg">
                                 <h2 className="text-xl font-semibold mb-4">Task Details</h2>
-                                <p><strong>Task Name: {selectedTask.name}</strong></p>
-                                <p><strong>Due Date: {selectedTask.dueDate}</strong></p>
-                                <p><strong>Priority: {selectedTask.priority}</strong></p>
+                                <p><strong>Task Name:</strong> {selectedTask.name}</p>
+                                <p><strong>Due Date:</strong> {selectedTask.dueDate}</p>
+                                <p><strong>Priority:</strong> {selectedTask.priority}</p>
                                 <div className="flex justify-start mt-8">
                                     <button
                                         onClick={closeDetailsModal}

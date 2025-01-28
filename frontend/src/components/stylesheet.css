@@ -1,8 +1,4 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-.task-list-content {
-    transition: max-height 0.3s ease-in-out;
-    overflow: hidden;
-    max-height: 0;
-}
+

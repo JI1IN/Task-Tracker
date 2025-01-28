@@ -32,7 +32,7 @@ class TaskTracker:
                     index += 1
                 todo_list['tasks'].append({
                     'name': task_name,
-                    'dueDate': due_date.strftime('%Y.%m.%d'),
+                    'dueDate': due_date.strftime('%Y-%m-%d'),
                     'priority': priority,
                     'done': False
                 })
@@ -92,7 +92,13 @@ def add_task():
     list_title = request.json.get('list_title')
 
     if task_name and due_date and priority and list_title:
-        tracker.add_task_to_list(list_title, task_name, datetime.strptime(due_date, '%Y.%m.%d'), priority)
+        # Parse date with the correct format from the frontend
+        try:
+            parsed_due_date = datetime.strptime(due_date, '%Y-%m-%d')
+        except ValueError:
+            return jsonify({'error': 'Invalid date format. Expected YYYY-MM-DD.'}), 400
+
+        tracker.add_task_to_list(list_title, task_name, parsed_due_date, priority)
         return jsonify({'success': True}), 201
     return jsonify({'error': 'Missing required fields'}), 400
 

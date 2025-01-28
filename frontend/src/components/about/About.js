@@ -25,7 +25,7 @@ function About() {
                     <br/>
                     yet powerful solutions and tools to
                     <br/>
-                    resolve real world problems.
+                    resolve real world problems (to the best of our abilities).
                 </p>
             </div>
 
