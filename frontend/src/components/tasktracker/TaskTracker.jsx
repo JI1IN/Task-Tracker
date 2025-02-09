@@ -4,6 +4,7 @@ import '../stylesheet.css';
 
 function TaskTracker() {
     const API_BASE_URL = process.env.REACT_APP_API_BASE_URL || 'http://localhost:5000';
+    axios.defaults.withCredentials = true;
 
     const today = new Date().toISOString().split('T')[0];
     const [lists, setLists] = useState([]);
@@ -32,7 +33,7 @@ function TaskTracker() {
 
     const loadTodoLists = async () => {
         try {
-            const response = await axios.get(`${API_BASE_URL}/get_lists`);
+            const response = await axios.get(`${API_BASE_URL}/get_lists`, {credentials : 'include'});
             setLists(response.data);
             if (!selectedList && response.data.length > 0) {
                 setSelectedList(response.data[0].title);
@@ -53,7 +54,7 @@ function TaskTracker() {
         }
 
         try {
-            await axios.post(`${API_BASE_URL}/add_list`, { title: newListTitle });
+            await axios.post(`${API_BASE_URL}/add_list`, { title: newListTitle , credentials : 'include'});
             setNewListTitle('');
             await loadTodoLists();
         } catch (error) {
@@ -64,7 +65,7 @@ function TaskTracker() {
 
     const deleteList = async (listTitle) => {
         try {
-            await axios.post(`${API_BASE_URL}/delete_list`, { title: listTitle });
+            await axios.post(`${API_BASE_URL}/delete_list`, { title: listTitle , credentials : 'include'});
             await loadTodoLists();
         } catch (error) {
             console.error('Error deleting list:', error.response?.data || error.message);
@@ -91,6 +92,7 @@ function TaskTracker() {
                 date: formattedDate,
                 priority: taskPriority,
                 list_title: selectedList,
+                credentials : 'include'
             });
 
             if (response.data.success) {
@@ -113,6 +115,7 @@ function TaskTracker() {
                 task: taskName,
                 done: isDone,
                 list_title: listTitle,
+                credentials : 'include'
             });
 
             const updatedLists = lists.map((list) => {
@@ -140,7 +143,7 @@ function TaskTracker() {
 
     const handleDelete = async (listTitle, taskName) => {
         try {
-            await axios.post(`${API_BASE_URL}/delete_task`, { title: listTitle, task: taskName });
+            await axios.post(`${API_BASE_URL}/delete_task`, { title: listTitle, task: taskName, credentials : 'include' });
             await loadTodoLists();
         } catch (error) {
             console.error('Error deleting task:', error.response?.data || error.message);

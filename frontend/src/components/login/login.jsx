@@ -1,18 +1,21 @@
 import React, { useState } from 'react';
+import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import '../stylesheet.css'
 
 function Login() {
+  const API_BASE_URL = process.env.REACT_APP_API_BASE_URL || 'http://localhost:5000';
+
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const navigate = useNavigate();
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
     if (email && password) {
+      const response = await axios.post(`${API_BASE_URL}/login`, {email : email, password : password});
       localStorage.setItem('user', JSON.stringify({ email }));
-      navigate('/task-tracker');
     }
   };
 
