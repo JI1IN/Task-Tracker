@@ -84,7 +84,7 @@ def register():
     try:
         email = request.json.get('email')
         salt = bcrypt.gensalt()
-        hash = bcrypt.hashpw(bytes(request.json.get('password'), 'utf-8'), salt)
+        hash = bcrypt.hashpw(str(request.json.get('password')), salt)
         user = User(email=email, password_salt=salt, password_hash=hash)
         db.session.add(user)
         db.session.commit()
