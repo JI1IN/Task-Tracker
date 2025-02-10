@@ -102,7 +102,7 @@ def login():
         print("trying")
         email = request.json.get('email')
         user = User.query.filter_by(email=email).first()
-        if user and bcrypt.hashpw(bytes(request.json.get('password'), 'utf-8'), user.password_salt) == user.password_hash:
+        if user and bcrypt.hashpw(str(request.json.get('password')), user.password_salt) == user.password_hash:
             login_user(user, remember=True)
             session.modified = True
             print(current_user.get_id())
