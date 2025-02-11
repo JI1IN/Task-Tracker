@@ -84,7 +84,7 @@ def register():
     try:
         email = request.json.get('email')
         salt = bcrypt.gensalt()
-        hash = bcrypt.hashpw(str(request.json.get('password')), salt)
+        hash = bcrypt.hashpw(str(request.json.get('password')).encode('utf-8'), salt)
         user = User(email=email, password_salt=salt, password_hash=hash)
         db.session.add(user)
         db.session.commit()
@@ -102,7 +102,7 @@ def login():
         print("trying")
         email = request.json.get('email')
         user = User.query.filter_by(email=email).first()
-        if user and bcrypt.hashpw(str(request.json.get('password')), user.password_salt) == user.password_hash:
+        if user and bcrypt.hashpw(str(request.json.get('password')).encode('utf-8'), user.password_salt) == user.password_hash:
             login_user(user, remember=True)
             session.modified = True
             print(current_user.get_id())
@@ -146,7 +146,7 @@ def add_list():
     
     if not list_title or list_title.isspace():
         return jsonify({'error': 'Missing title'}), 400
-    elif db.session.query(Tasklist).filter_by(title=list_title).first():
+    elif db.session.query(Tasklist).filter_by(title=list_title, user_id=current_user.get_id()).first():
         return jsonify({'error': 'Duplicate title'}), 400
 
     try:
