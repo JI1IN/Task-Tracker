@@ -29,7 +29,7 @@ function Register() {
 
       <div className="w-full lg:w-1/2 flex items-center justify-center bg-white p-6">
         <div className="w-full max-w-sm">
-          <h2 className="text-3xl font-bold text-center">Register</h2>
+          <h2 className="text-3xl font-bold text-center">Sign in</h2>
           <h2 className="text-xl text-gray-400 text-center mb-12">Let's get started</h2>
           <form onSubmit={handleSubmit} className="flex flex-col items-center">
             <div className="mb-4 w-full">
@@ -74,7 +74,11 @@ function Register() {
         </div>
       </div>
 
-      <div className="hidden lg:block lg:w-1/2 bg-[#FFF2D7]"></div>
+      <div className="hidden lg:block lg:w-1/2 bg-[#FFF2D7]">
+        <h1 className="p-10 mr-12 font-bold flex justify-end">TaskMaster</h1>
+        <h1 className="p-10 mr-12 font-semibold text-4xl flex justify-end">Sign in to TaskMaster</h1>
+
+      </div>
 
     </div>
   );
