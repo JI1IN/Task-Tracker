@@ -221,5 +221,18 @@ def delete_task():
     
     return jsonify({'success' : True}), 204
 
+# TODO testing needed
+@app.route('/get_tasks', methods=['GET'])
+@login_required
+def get_tasks():
+    try:
+        list_title = request.get('title')
+        list_id = db.session.query(Tasklist).filter_by(title=list_title, user_id=current_user.get_id()).first().tasklist_id
+        tasks_from_db = Task.query.filter_by(tasklist_id=list_id)
+        tasks_serialised = TaskSchema(many=True).dumps(tasks_from_db)
+        return tasks_serialised, 200
+    except Exception as e:
+        return jsonify({'error' : str(e)}), 400
+
 if __name__ == '__main__':
     app.run(debug=True)
