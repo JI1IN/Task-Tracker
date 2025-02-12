@@ -23,7 +23,11 @@ function Login() {
 
   return (
     <div className="flex min-h-screen">
-      <div className="hidden lg:block lg:w-1/2 bg-[#FFF2D7]"></div>
+
+      <div className="hidden lg:block lg:w-1/2 bg-[#FFF2D7]">
+        <h1 className="p-10 ml-12 font-bold">TaskMaster</h1>
+        <h1 className="p-10 ml-12 font-semibold text-4xl">Log in to TaskMaster</h1>
+      </div>
 
       <div className="w-full lg:w-1/2 flex items-center justify-center bg-white p-6">
         <div className="w-full max-w-sm">
