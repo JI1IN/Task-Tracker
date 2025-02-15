@@ -83,7 +83,7 @@ function Register() {
 
       <div className="hidden lg:block lg:w-1/2 bg-[#FFF2D7]">
         <h1 className="p-10 mr-12 font-bold flex justify-end">TaskMaster</h1>
-        <h1 className="p-10 mr-12 font-semibold text-4xl flex justify-end">Sign in to TaskMaster</h1>
+        <h1 className="p-10 mr-12 font-semibold text-4xl flex justify-end">Sign up to TaskMaster</h1>
       </div>
     </div>
   );

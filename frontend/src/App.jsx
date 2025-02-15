@@ -74,7 +74,7 @@ function App() {
                   to="/register"
                   className="bg-[#F8C794] font-semibold text-base px-4 py-2 rounded-md hover:bg-[#ff8c1a] transition duration-300 ease-in-out"
                 >
-                  Sign in
+                  Sign up
                 </Link>
               </div>
             </div>
