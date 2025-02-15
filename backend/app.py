@@ -79,13 +79,20 @@ class TaskSchema(ma.SQLAlchemyAutoSchema):
 def load_user(user_id):
     return User.query.filter_by(user_id=user_id).first()
 
+
 @app.route('/register', methods=['POST'])
 def register():
     try:
         email = request.json.get('email')
-        salt = bcrypt.gensalt()
-        hash = bcrypt.hashpw(str(request.json.get('password')).encode('utf-8'), salt)
-        user = User(email=email, password_salt=salt, password_hash=hash)
+        password = request.json.get('password')  # pwd alr a str
+        salt = bcrypt.gensalt()                # gensalt() returns a str in python_bcrypt
+        hash = bcrypt.hashpw(password, salt)    # pass pwd as a str
+
+        user = User(
+            email=email,
+            password_salt=salt,
+            password_hash=hash
+        )
         db.session.add(user)
         db.session.commit()
         login_user(user, remember=True)
@@ -96,23 +103,25 @@ def register():
         return jsonify({'error': str(e)}), 400
     return jsonify({'success': True}), 200
 
+
 @app.route('/login', methods=['POST'])
 def login():
     try:
-        print("trying")
         email = request.json.get('email')
+        password = request.json.get('password')  # Already a str
         user = User.query.filter_by(email=email).first()
-        if user and bcrypt.hashpw(str(request.json.get('password')).encode('utf-8'), user.password_salt) == user.password_hash:
-            login_user(user, remember=True)
-            session.modified = True
-            print(current_user.get_id())
-            print(session)
-            return jsonify({'success' : True}), 200
-        else:
-            return jsonify({'error': 'Wrong password'}), 401
+        if user:
+            salt = user.password_salt       # Stored as a str
+            stored_hash = user.password_hash # Stored as a str
+            input_hash = bcrypt.hashpw(password, salt)  # Use the password str
+            if input_hash == stored_hash:
+                login_user(user, remember=True)
+                session.modified = True
+                return jsonify({'success': True}), 200
+        return jsonify({'error': 'Wrong email or password'}), 401
     except Exception as e:
-        print(str(e))
         return jsonify({'error': str(e)}), 400
+
 
 @app.route('/get_lists', methods=['GET'])
 @login_required
@@ -157,6 +166,7 @@ def add_list():
     except Exception as e:
         return jsonify({'error' : str(e)}), 400
 
+
 @app.route('/add_task', methods=['POST'])
 @login_required
 def add_task():
@@ -164,24 +174,32 @@ def add_task():
     due_date = request.json.get('date')
     priority = request.json.get('priority')
     list_title = request.json.get('list_title')
+
     if task_name and due_date and priority and list_title:
-        # Parse date with the correct format from the frontend
         try:
             parsed_due_date = datetime.strptime(due_date, '%Y-%m-%d')
-            list_id = db.session.query(Tasklist).filter_by(title=list_title).first().tasklist_id
-            print(list_id)
-            task = Task(tasklist_id=list_id, name=task_name, due_date=parsed_due_date, priority=priority)
-            schema = TaskSchema()
-            print(schema.dumps(task))
+            tasklist = Tasklist.query.filter_by(
+                title=list_title,
+                user_id=current_user.user_id
+            ).first()
+            if not tasklist:
+                return jsonify({'error': 'List not found'}), 404
+            list_id = tasklist.tasklist_id
+
+            task = Task(
+                tasklist_id=list_id,
+                name=task_name,
+                due_date=parsed_due_date,
+                priority=priority
+            )
             db.session.add(task)
             db.session.commit()
+            return jsonify({'success': True}), 201
         except ValueError:
-            return jsonify({'error': 'Invalid date format. Expected YYYY-MM-DD.'}), 400
+            return jsonify({'error': 'Invalid date format'}), 400
         except Exception as e:
-            return jsonify({'error' : str(e)}), 400
-        
-        return jsonify({'success': True}), 201
-    return jsonify({'error': 'Missing required fields'}), 400
+            return jsonify({'error': str(e)}), 400
+    return jsonify({'error': 'Missing fields'}), 400
 
 # TODO testing
 @app.route('/update_task_status', methods=['POST'])

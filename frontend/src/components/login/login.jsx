@@ -23,7 +23,6 @@ function Login() {
 
   return (
     <div className="flex min-h-screen">
-
       <div className="hidden lg:block lg:w-1/2 bg-[#FFF2D7]">
         <h1 className="p-10 ml-12 font-bold">TaskMaster</h1>
         <h1 className="p-10 ml-12 font-semibold text-4xl">Log in to TaskMaster</h1>
@@ -37,32 +36,40 @@ function Login() {
             <div className="mb-4 w-full">
               <label htmlFor="email" className="block text-gray-900">Email</label>
               <input
-                  type="email"
-                  id="email"
-                  className="w-full p-3 mt-2 border border-black rounded-xl"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
+                type="email"
+                id="email"
+                className="w-full p-3 mt-2 border border-black rounded-xl focus:border-[#F8C794] focus:outline-none transition-colors duration-300"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
               />
             </div>
             <div className="mb-4 w-full">
               <label htmlFor="password" className="block text-gray-900">Password</label>
               <input
-                  type="password"
-                  id="password"
-                  className="w-full p-3 mt-2 border border-black rounded-xl"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
+                type="password"
+                id="password"
+                className="w-full p-3 mt-2 border border-black rounded-xl focus:border-[#F8C794] focus:outline-none transition-colors duration-300"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
               />
             </div>
             <div className="w-full flex justify-center mt-10">
               <button
-                  type="submit"
-                  className="w-1/2 text-center bg-[#F8C794] text-black-900 font-bold py-3 rounded-lg hover:bg-gray-900 hover:text-white transition duration-300"
+                type="submit"
+                className="w-1/2 text-center bg-[#F8C794] text-black-900 font-bold py-3 rounded-lg hover:bg-gray-900 hover:text-white transition duration-300"
               >
                 Log in
               </button>
             </div>
           </form>
+
+          {/* Account switch link */}
+          <div className="text-center mt-6">
+            <p className="text-gray-600">
+              Don't have an account?
+              <a href="/register" className="text-[#F8C794] font-semibold"> Register</a>
+            </p>
+          </div>
         </div>
       </div>
     </div>
