@@ -7,6 +7,7 @@ import Contact from './components/contact/Contact';
 import TaskTracker from './components/tasktracker/TaskTracker';
 import Login from './components/login/login';
 import Register from './components/register/register';
+import Button from '@mui/material/Button';
 
 function App() {
   return (
@@ -66,15 +67,31 @@ function App() {
               <div className="ml-auto flex space-x-4 items-center">
                 <Link
                   to="/login"
-                  className="font-semibold text-base px-4 py-2 bg-[#F8C794] rounded-md hover:bg-[#ff8c1a] transition duration-300 ease-in-out"
                 >
+                  <Button  variant="contained"
+                  sx={{
+                  backgroundColor: '#F8C794',
+                  textTransform: 'none',
+                  color: '#000',
+                    fontWeight:'bold',
+                  '&:hover': { backgroundColor: '#ff8c1a' }
+                  }}>
                   Log in
+                  </Button>
                 </Link>
                 <Link
                   to="/register"
-                  className="bg-[#F8C794] font-semibold text-base px-4 py-2 rounded-md hover:bg-[#ff8c1a] transition duration-300 ease-in-out"
                 >
-                  Sign up
+                 <Button  variant="contained"
+                  sx={{
+                  backgroundColor: '#F8C794',
+                  textTransform: 'none',
+                    color: '#000',
+                   fontWeight:'bold',
+                  '&:hover': { backgroundColor: '#ff8c1a' }
+                  }}>
+                  Sign Up
+                  </Button>
                 </Link>
               </div>
             </div>

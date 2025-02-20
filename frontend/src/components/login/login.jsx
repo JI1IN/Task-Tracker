@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
-import '../stylesheet.css';
+import '../global.css';
+import TextField from "@mui/material/TextField"
+import {Button} from "@mui/material";
 
 function Login() {
   const API_BASE_URL = process.env.REACT_APP_API_BASE_URL || 'http://localhost:5000';
@@ -30,44 +32,74 @@ function Login() {
 
       <div className="w-full lg:w-1/2 flex items-center justify-center bg-white p-6">
         <div className="w-full max-w-sm">
-          <h2 className="text-3xl font-bold text-center">Login</h2>
+          <h2 className="text-3xl font-bold text-center">Log in</h2>
           <h2 className="text-xl text-gray-400 text-center mb-12">Welcome to TaskMaster</h2>
           <form onSubmit={handleSubmit} className="flex flex-col items-center">
             <div className="mb-4 w-full">
-              <label htmlFor="email" className="block text-gray-900">Email</label>
-              <input
-                type="email"
-                id="email"
-                className="w-full p-3 mt-2 border border-black rounded-xl focus:border-[#F8C794] focus:outline-none transition-colors duration-300"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-              />
+              <TextField
+              id="email"
+              label="Email"
+              variant="outlined"
+              fullWidth
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              className="mt-2"
+              sx={{
+              '& .MuiOutlinedInput-root': {
+              borderRadius: '12px',
+              },
+              '& .Mui-focused .MuiOutlinedInput-notchedOutline': {
+              borderColor: '#F8C794',
+          },
+          }}
+      />
+
             </div>
             <div className="mb-4 w-full">
-              <label htmlFor="password" className="block text-gray-900">Password</label>
-              <input
-                type="password"
-                id="password"
-                className="w-full p-3 mt-2 border border-black rounded-xl focus:border-[#F8C794] focus:outline-none transition-colors duration-300"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
+              <TextField
+              id="outlined-password-input"
+              label="Password"
+              type="password"
+              fullWidth
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              autoComplete="current-password"
+               sx={{
+              '& .MuiOutlinedInput-root': {
+              borderRadius: '12px',
+              },
+              '& .Mui-focused .MuiOutlinedInput-notchedOutline': {
+              borderColor: '#F8C794',
+            },
+            }}
               />
             </div>
-            <div className="w-full flex justify-center mt-10">
-              <button
+            <div className="w-full flex justify-center ">
+              <Button
                 type="submit"
-                className="w-1/2 text-center bg-[#F8C794] text-black-900 font-bold py-3 rounded-lg hover:bg-gray-900 hover:text-white transition duration-300"
+                variant="contained"
+                fullWidth
+                sx={{
+                  backgroundColor: '#F8C794',
+                  color: 'black',
+                  fontWeight: 'bold',
+                  py: 2,
+                  borderRadius: '12px',
+                  '&:hover': {
+                    backgroundColor: '#333',
+                    color: '#fff',
+                  },
+                }}
               >
                 Log in
-              </button>
+              </Button>
             </div>
           </form>
 
-          {/* Account switch link */}
           <div className="text-center mt-6">
             <p className="text-gray-600">
               Don't have an account?
-              <a href="/register" className="text-[#F8C794] font-semibold"> Register</a>
+              <a href="/register" className="text-[#F8C794] font-semibold"> Sign Up</a>
             </p>
           </div>
         </div>
