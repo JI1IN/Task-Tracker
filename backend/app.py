@@ -86,7 +86,7 @@ def register():
         email = request.json.get('email')
         password = request.json.get('password')  # pwd alr a str
         salt = bcrypt.gensalt()                # gensalt() returns a str in python_bcrypt
-        hash = bcrypt.hashpw(password, salt)    # pass pwd as a str
+        hash = bcrypt.hashpw(password.encode('utf-8'), salt)    # pass pwd as a str
 
         user = User(
             email=email,
@@ -113,7 +113,7 @@ def login():
         if user:
             salt = user.password_salt       # Stored as a str
             stored_hash = user.password_hash # Stored as a str
-            input_hash = bcrypt.hashpw(password, salt)  # Use the password str
+            input_hash = bcrypt.hashpw(password.encode('utf-8'), salt)  # Use the password str
             if input_hash == stored_hash:
                 login_user(user, remember=True)
                 session.modified = True
