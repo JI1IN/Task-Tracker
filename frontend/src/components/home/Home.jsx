@@ -1,5 +1,7 @@
 import React from 'react';
 import '../global.css'
+import {Button} from '@mui/material'
+import {Link} from "react-router-dom";
 
 function Home() {
     return (
@@ -12,10 +14,19 @@ function Home() {
                     <p className="text-lg sm:text-2xl sm:text-black mb-6">
                         Stay Organized, Get Things Done.
                     </p>
-                    <button
-                        className="px-8 py-4 bg-orange-400 text-white text-lg font-semibold rounded-md shadow-md hover:bg-orange-500">
-                        Get Started Now
-                    </button>
+                    <Link to="/register">
+                     <Button  variant="contained"
+                  sx={{
+                  backgroundColor: '#F8C794',
+                  textTransform: 'none',
+                    color: '#000',
+                   fontWeight:'bold',
+
+                  '&:hover': { backgroundColor: '#ff8c1a' },
+                  }}>
+                  Get Started Now
+                  </Button>
+                        </Link>
                 </div>
             </div>
             <div className="flex flex-col sm:flex-row justify-between items-center min-h-screen bg-orange-50 px-6 sm:px-32 py-10 sm:py-0">

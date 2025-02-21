@@ -177,19 +177,24 @@ function TaskTracker() {
                 <aside className="w-full lg:w-1/5 bg-[#FFE0B5] p-4 shadow-md lg:min-h-screen">
                     <h2 className="text-2xl font-semibold mb-4">Task Lists</h2>
                     <form className="mt-4 mb-4" onSubmit={addList}>
-                        <input
-                            type="text"
+                        <div className="mb-2">
+                         <TextField
+                            id="filled-helperText"
+                            label="New List Title"
+                            variant="filled"
+                            fullWidth
                             value={newListTitle}
                             onChange={(e) => setNewListTitle(e.target.value)}
-                            placeholder="New List Title"
-                            className="w-full px-3 py-2 border border-gray-300 rounded-lg mb-2"
                         />
-                        <button
+                            </div>
+
+                        <Button
                             type="submit"
-                            className="w-full px-3 py-2 bg-[#D4A57A] text-white rounded-lg hover:bg-[#C28F61] transition duration-150 text-sm"
-                        >
+                            variant="contained"
+                            fullWidth
+                            color="success">
                             Add List
-                        </button>
+                        </Button>
                     </form>
 
                     <ul>
@@ -201,12 +206,16 @@ function TaskTracker() {
                                 >
                                     {list.title}
                                 </span>
-                                <button
+                              <div className="ml-0.5">
+                                <Button
+                                    variant="contained"
                                     onClick={() => deleteList(list.title)}
-                                    className="text-red-500 bg-white ml-2 px-3 py-2 rounded-3xl hover:bg-gray-400 transition duration-150 text-sm"
-                                >
+                                    textTransform='none'
+                                    color="error"
+                                    >
                                     Delete
-                                </button>
+                                </Button>
+                                  </div>
                             </li>
                         ))}
                     </ul>

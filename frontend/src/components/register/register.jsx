@@ -46,9 +46,7 @@ function Register() {
                     borderRadius: '12px',
                     borderColor: 'black',
                   },
-                  '& .Mui-focused .MuiOutlinedInput-notchedOutline': {
-                    borderColor: '#F8C794',
-                  },
+
                 }}
               />
             </div>
@@ -66,9 +64,7 @@ function Register() {
                     borderRadius: '12px',
                     borderColor: 'black',
                   },
-                  '& .Mui-focused .MuiOutlinedInput-notchedOutline': {
-                    borderColor: '#F8C794',
-                  },
+
                 }}
               />
             </div>
@@ -86,9 +82,7 @@ function Register() {
                     borderRadius: '12px',
                     borderColor: 'black',
                   },
-                  '& .Mui-focused .MuiOutlinedInput-notchedOutline': {
-                    borderColor: '#F8C794',
-                  },
+
                 }}
               />
             </div>

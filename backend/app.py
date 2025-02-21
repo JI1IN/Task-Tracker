@@ -84,9 +84,9 @@ def load_user(user_id):
 def register():
     try:
         email = request.json.get('email')
-        password = request.json.get('password')  # pwd alr a str
-        salt = bcrypt.gensalt()                # gensalt() returns a str in python_bcrypt
-        hash = bcrypt.hashpw(password.encode('utf-8'), salt)    # pass pwd as a str
+        password = request.json.get('password')
+        salt = bcrypt.gensalt()
+        hash = bcrypt.hashpw(password.encode('utf-8'), salt)
 
         user = User(
             email=email,
@@ -108,12 +108,12 @@ def register():
 def login():
     try:
         email = request.json.get('email')
-        password = request.json.get('password')  # Already a str
+        password = request.json.get('password')
         user = User.query.filter_by(email=email).first()
         if user:
-            salt = user.password_salt       # Stored as a str
-            stored_hash = user.password_hash # Stored as a str
-            input_hash = bcrypt.hashpw(password.encode('utf-8'), salt)  # Use the password str
+            salt = user.password_salt
+            stored_hash = user.password_hash
+            input_hash = bcrypt.hashpw(password.encode('utf-8'), salt)
             if input_hash == stored_hash:
                 login_user(user, remember=True)
                 session.modified = True
@@ -228,7 +228,7 @@ def delete_task():
 
     if not task_name or not list_title:
         return jsonify({'error': 'Missing required fields'}), 400
-    
+
     try:
         list_id = db.session.query(Tasklist).filter_by(title=list_title).first().tasklist_id
         rowsdeleted = Task.query.filter_by(name=task_name, tasklist_id=list_id).delete()
@@ -236,7 +236,7 @@ def delete_task():
         print(rowsdeleted)
     except Exception as e:
         return jsonify({'error' : str(e)}), 400
-    
+
     return jsonify({'success' : True}), 204
 
 # TODO testing needed
