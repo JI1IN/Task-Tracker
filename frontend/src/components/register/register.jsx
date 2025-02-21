@@ -12,13 +12,28 @@ function Register() {
   const [confirmPassword, setConfirmPassword] = useState('');
   const navigate = useNavigate();
 
+  function isPasswordValid(password){
+    return password.length > 8 
+      && /[a-z]/g.test(password) 
+      && /[A-Z]/g.test(password) 
+      && /[0-9]/g.test(password) 
+      && /\W|_/g.test(password);
+  }
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     if (password === confirmPassword) {
-      const response = await axios.post(`${API_BASE_URL}/register`, { email, password });
-      if (response.status === 200) {
-        navigate('/tasktracker');
+      if(isPasswordValid(password)) {
+        console.log(isPasswordValid(password));
+
+        const response = await axios.post(`${API_BASE_URL}/register`, { email, password });
+        if (response.status === 200) {
+          navigate('/tasktracker');
+        }
+      } else {
+        // #TODO 
+        console.log("(implement proper error for this: failed to meet password criteria)");
       }
     } else {
       alert('Passwords do not match!');
