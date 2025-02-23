@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import '../global.css';
-import { TextField, Button } from '@mui/material';
-
+import { TextField, Button, Snackbar, Alert, Dialog, DialogActions, DialogContent, DialogTitle } from '@mui/material';
 
 function TaskTracker() {
     const API_BASE_URL = process.env.REACT_APP_API_BASE_URL || 'http://localhost:5000';
@@ -11,28 +10,36 @@ function TaskTracker() {
 
     const today = new Date().toISOString().split('T')[0];
     const [lists, setLists] = useState([]);
+    const [tasks, setTasks] = useState([]); // State to store tasks for the selected list
     const [newListTitle, setNewListTitle] = useState('');
     const [newTask, setNewTask] = useState('');
     const [taskDueDate, setTaskDueDate] = useState(today);
     const [taskPriority, setTaskPriority] = useState('medium');
     const [selectedList, setSelectedList] = useState('');
-    const [errorMessage, setErrorMessage] = useState('');
     const [selectedTask, setSelectedTask] = useState(null);
     const [isTaskModalOpen, setIsTaskModalOpen] = useState(false);
     const [isDetailsModalOpen, setIsDetailsModalOpen] = useState(false);
+
+    const [toastMessage, setToastMessage] = useState('');
+    const [toastType, setToastType] = useState('error');
+    const [open, setOpen] = useState(false);
 
     useEffect(() => {
         loadTodoLists();
     }, []);
 
     useEffect(() => {
-        if (errorMessage) {
+        if (toastMessage) {
             const timer = setTimeout(() => {
-                setErrorMessage('');
-            }, 5000);
+                setOpen(false);
+            }, 3000); // auto-hide after 3 seconds
             return () => clearTimeout(timer);
         }
-    }, [errorMessage]);
+    }, [toastMessage]);
+
+    const handleCloseToast = () => {
+        setOpen(false);
+    };
 
     const loadTodoLists = async () => {
         try {
@@ -44,25 +51,61 @@ function TaskTracker() {
                 setSelectedList('');
             }
         } catch (error) {
-            console.error('Error loading task lists:', error.response?.data || error.message);
-            setErrorMessage('Error loading task lists. Please try again.');
+            setToastMessage('Error loading task lists. Please try again.');
+            setToastType('error');
+            setOpen(true);
         }
     };
 
+    const loadTasks = async (listTitle) => {
+        try {
+            const response = await axios.get(`${API_BASE_URL}/get_tasks?title=${listTitle}`);
+            const tasksData = response.data;
+            setTasks(tasksData);
+        } catch (error) {
+            setToastMessage('Error loading tasks. Please try again.');
+            setToastType('error');
+            setOpen(true);
+        }
+    };
+
+    // Function to generate a unique title for the new list
+    const generateUniqueListTitle = (title) => {
+        let uniqueTitle = title;
+        let index = 1;
+
+        // Check if the list title already exists
+        while (lists.some((list) => list.title === uniqueTitle)) {
+            uniqueTitle = `${title} (${index})`;
+            index++;
+        }
+
+        return uniqueTitle;
+    };
+
+    // Modify the addList function to use the unique title
     const addList = async (event) => {
         event.preventDefault();
         if (!newListTitle) {
-            setErrorMessage('Please enter a list title.');
+            setToastMessage('Please enter a list title.');
+            setToastType('error');
+            setOpen(true);
             return;
         }
 
+        const uniqueTitle = generateUniqueListTitle(newListTitle);
+
         try {
-            await axios.post(`${API_BASE_URL}/add_list`, { title: newListTitle });
+            await axios.post(`${API_BASE_URL}/add_list`, { title: uniqueTitle });
             setNewListTitle('');
             await loadTodoLists();
+            setToastMessage('List added successfully!');
+            setToastType('success');
+            setOpen(true);
         } catch (error) {
-            console.error('Error adding list:', error.response?.data || error.message);
-            setErrorMessage('Error adding list. Please try again.');
+            setToastMessage('Error adding list. Please try again.');
+            setToastType('error');
+            setOpen(true);
         }
     };
 
@@ -70,19 +113,24 @@ function TaskTracker() {
         try {
             await axios.post(`${API_BASE_URL}/delete_list`, { title: listTitle });
             await loadTodoLists();
+            setToastMessage('List deleted successfully!');
+            setToastType('success');
+            setOpen(true);
         } catch (error) {
-            console.error('Error deleting list:', error.response?.data || error.message);
-            setErrorMessage('Error deleting list. Please try again.');
+            setToastMessage('Error deleting list. Please try again.');
+            setToastType('error');
+            setOpen(true);
         }
     };
 
     const addTask = async (event) => {
         event.preventDefault();
         if (!newTask || !selectedList || !taskDueDate) {
-            setErrorMessage('Please fill in all fields.');
+            setToastMessage('Please fill in all fields.');
+            setToastType('error');
+            setOpen(true);
             return;
         }
-
         const formattedDate = new Date(taskDueDate)
             .toLocaleDateString('en-GB')
             .split('/')
@@ -101,54 +149,59 @@ function TaskTracker() {
                 setNewTask('');
                 setTaskDueDate(today);
                 await loadTodoLists();
+                await loadTasks(selectedList);
                 setIsTaskModalOpen(false);
+                setToastMessage('Task added successfully!');
+                setToastType('success');
+                setOpen(true);
             } else {
-                setErrorMessage('Failed to add task. Please try again.');
+                setToastMessage('Failed to add task. Please try again.');
+                setToastType('error');
+                setOpen(true);
             }
         } catch (error) {
-            console.error('Error adding task:', error.response?.data || error.message);
-            setErrorMessage('Error adding task. Please try again.');
+            setToastMessage('Error adding task. Please try again.');
+            setToastType('error');
+            setOpen(true);
         }
     };
 
-    const toggleTaskDone = async (taskName, isDone, listTitle) => {
+    const toggleTaskDone = async (taskName, isDone) => {
         try {
             await axios.post(`${API_BASE_URL}/update_task_status`, {
                 task: taskName,
                 done: isDone,
-                list_title: listTitle
+                list_title: selectedList
             });
 
-            const updatedLists = lists.map((list) => {
-                if (list.title === listTitle) {
-                    list.tasks = list.tasks.map((task) =>
-                        task.name === taskName ? { ...task, done: isDone } : task
-                    );
-                }
-                return list;
-            });
+            const updatedTasks = tasks.map((task) =>
+                task.name === taskName ? { ...task, done: isDone } : task
+            );
 
-            setLists(updatedLists);
+            setTasks(updatedTasks);
         } catch (error) {
-            console.error('Error updating task status:', error.response?.data || error.message);
-            setErrorMessage('Error updating task status.');
+            setToastMessage('Error updating task status.');
+            setToastType('error');
+            setOpen(true);
         }
     };
+
     const handleShowDetails = (task) => {
-        setSelectedTask({
-            ...task,
-            dueDate: task.dueDate || task.date,
-        });
+        setSelectedTask(task);
         setIsDetailsModalOpen(true);
     };
 
-    const handleDelete = async (listTitle, taskName) => {
+    const handleDelete = async (taskName) => {
         try {
-            await axios.post(`${API_BASE_URL}/delete_task`, { title: listTitle, task: taskName });
-            await loadTodoLists();
+            await axios.post(`${API_BASE_URL}/delete_task`, { title: selectedList, task: taskName });
+            await loadTasks(selectedList); // Reload tasks after deletion
+            setToastMessage('Task deleted successfully!');
+            setToastType('success');
+            setOpen(true);
         } catch (error) {
-            console.error('Error deleting task:', error.response?.data || error.message);
-            setErrorMessage('Error deleting task. Please try again.');
+            setToastMessage('Error deleting task. Please try again.');
+            setToastType('error');
+            setOpen(true);
         }
     };
 
@@ -157,7 +210,7 @@ function TaskTracker() {
         setNewTask('');
         setTaskDueDate(today);
         setTaskPriority('medium');
-        setErrorMessage('');
+        setToastMessage('');
     };
 
     const closeDetailsModal = () => {
@@ -165,28 +218,34 @@ function TaskTracker() {
         setSelectedTask(null);
     };
 
+    useEffect(() => {
+        if (selectedList) {
+            loadTasks(selectedList);
+        }
+    }, [selectedList]);
+
     return (
         <div className="min-h-screen bg-orange-100">
-            {errorMessage && (
-                <div className="bg-red-500 text-white p-4 rounded-lg mb-4">
-                    <strong>Error:</strong> {errorMessage}
-                </div>
-            )}
+            <Snackbar open={open} autoHideDuration={3000} onClose={handleCloseToast}>
+                <Alert onClose={handleCloseToast} severity={toastType} sx={{ width: '100%' }}>
+                    {toastMessage}
+                </Alert>
+            </Snackbar>
 
             <div className="flex flex-col lg:flex-row">
                 <aside className="w-full lg:w-1/5 bg-[#FFE0B5] p-4 shadow-md lg:min-h-screen">
                     <h2 className="text-2xl font-semibold mb-4">Task Lists</h2>
                     <form className="mt-4 mb-4" onSubmit={addList}>
                         <div className="mb-2">
-                         <TextField
-                            id="filled-helperText"
-                            label="New List Title"
-                            variant="filled"
-                            fullWidth
-                            value={newListTitle}
-                            onChange={(e) => setNewListTitle(e.target.value)}
-                        />
-                            </div>
+                            <TextField
+                                id="filled-helperText"
+                                label="New List Title"
+                                variant="filled"
+                                fullWidth
+                                value={newListTitle}
+                                onChange={(e) => setNewListTitle(e.target.value)}
+                            />
+                        </div>
 
                         <Button
                             type="submit"
@@ -206,16 +265,16 @@ function TaskTracker() {
                                 >
                                     {list.title}
                                 </span>
-                              <div className="ml-0.5">
-                                <Button
-                                    variant="contained"
-                                    onClick={() => deleteList(list.title)}
-                                    textTransform='none'
-                                    color="error"
+                                <div className="ml-0.5">
+                                    <Button
+                                        variant="contained"
+                                        onClick={() => deleteList(list.title)}
+                                        textTransform='none'
+                                        color="error"
                                     >
-                                    Delete
-                                </Button>
-                                  </div>
+                                        Delete
+                                    </Button>
+                                </div>
                             </li>
                         ))}
                     </ul>
@@ -237,111 +296,104 @@ function TaskTracker() {
                                 </button>
                             </div>
 
-                            {lists
-                                .find((list) => list.title === selectedList)
-                                ?.tasks.map((task) => (
-                                    <div
-                                        key={task.name}
-                                        className={`p-4 mb-2 rounded-3xl border-b-4 border-gray-400 ${
-                                            task.done ? 'bg-green-100 line-through' : 'bg-[#FFE0B5]'
-                                        }`}
-                                    >
-                                        <div className="flex justify-between items-center">
-                                            <div className="flex items-center">
-                                                <input
-                                                    type="checkbox"
-                                                    checked={task.done}
-                                                    onChange={(e) => toggleTaskDone(task.name, e.target.checked, selectedList)}
-                                                    className="mr-4"
-                                                />
-                                                <span
-                                                    className="cursor-pointer text-lg text-gray-800 transition-transform duration-300 transform hover:scale-105"
-                                                    onClick={() => handleShowDetails(task)}
-                                                >
-                                                    {task.name}
-                                                </span>
-                                            </div>
-                                            <div>
-                                                <button
-                                                    onClick={() => handleDelete(selectedList, task.name)}
-                                                    className="px-4 py-2 bg-[#D4A57A] text-white rounded-lg hover:bg-[#C28F61] transition duration-300 text-sm"
-                                                >
-                                                    Delete
-                                                </button>
-                                            </div>
+                            {tasks.map((task) => (
+                                <div
+                                    key={task.name}
+                                    className={`p-4 mb-2 rounded-3xl border-b-4 border-gray-400 ${
+                                        task.done ? 'bg-green-100 line-through' : 'bg-[#FFE0B5]'
+                                    }`}
+                                >
+                                    <div className="flex justify-between items-center">
+                                        <div className="flex items-center">
+                                            <input
+                                                type="checkbox"
+                                                checked={task.done}
+                                                onChange={(e) => toggleTaskDone(task.name, e.target.checked)}
+                                                className="mr-4"
+                                            />
+                                            <span
+                                                className="cursor-pointer text-lg text-gray-800 transition-transform duration-300 transform hover:scale-105"
+                                                onClick={() => handleShowDetails(task)}
+                                            >
+                                                {task.name}
+                                            </span>
+                                        </div>
+                                        <div>
+                                            <button
+                                                onClick={() => handleDelete(task.name)}
+                                                className="px-4 py-2 bg-[#D4A57A] text-white rounded-lg hover:bg-[#C28F61] transition duration-300 text-sm"
+                                            >
+                                                Delete
+                                            </button>
                                         </div>
                                     </div>
-                                ))}
-                        </div>
-                    )}
-
-                    {isTaskModalOpen && (
-                        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
-                            <div className="modal-content bg-white p-6 rounded-lg w-96 shadow-lg">
-                                <h2 className="text-xl font-semibold mb-4">Add Task</h2>
-                                <form onSubmit={addTask}>
-                                    <input
-                                        type="text"
-                                        value={newTask}
-                                        onChange={(e) => setNewTask(e.target.value)}
-                                        placeholder="Task Name"
-                                        className="w-full px-3 py-2 mb-4 border border-gray-300 rounded-lg"
-                                    />
-                                    <input
-                                        type="date"
-                                        value={taskDueDate}
-                                        onChange={(e) => setTaskDueDate(e.target.value)}
-                                        className="w-full px-3 py-2 mb-4 border border-gray-300 rounded-lg"
-                                    />
-                                    <select
-                                        value={taskPriority}
-                                        onChange={(e) => setTaskPriority(e.target.value)}
-                                        className="w-full px-3 py-2 mb-4 border border-gray-300 rounded-lg"
-                                    >
-                                        <option value="low">Low</option>
-                                        <option value="medium">Medium</option>
-                                        <option value="high">High</option>
-                                    </select>
-                                    <div className="flex justify-between">
-                                        <button
-                                            type="button"
-                                            onClick={closeTaskModal}
-                                            className="px-4 py-2 bg-[#B67A51] text-white rounded-lg hover:bg-[#A56843]"
-                                        >
-                                            Cancel
-                                        </button>
-                                        <button
-                                            type="submit"
-                                            className="px-4 py-2 bg-[#D4A57A] text-white rounded-lg hover:bg-[#C28F61]"
-                                        >
-                                            Add Task
-                                        </button>
-                                    </div>
-                                </form>
-                            </div>
-                        </div>
-                    )}
-
-                    {isDetailsModalOpen && selectedTask && (
-                        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
-                            <div className="modal-content bg-[#F8C794] p-6 rounded-lg w-96 shadow-lg">
-                                <h2 className="text-xl font-semibold mb-4">Task Details</h2>
-                                <p><strong>Task Name:</strong> {selectedTask.name}</p>
-                                <p><strong>Due Date:</strong> {selectedTask.dueDate}</p>
-                                <p><strong>Priority:</strong> {selectedTask.priority}</p>
-                                <div className="flex justify-start mt-8">
-                                    <button
-                                        onClick={closeDetailsModal}
-                                        className="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-700 transition duration-150"
-                                    >
-                                        Close
-                                    </button>
                                 </div>
-                            </div>
+                            ))}
                         </div>
                     )}
                 </main>
             </div>
+
+            <Dialog open={isTaskModalOpen} onClose={closeTaskModal} maxWidth="sm" fullWidth>
+                <DialogTitle className="bg-[#FFE0B5] text-center font-semibold text-xl">Add New Task</DialogTitle>
+                <DialogContent className="bg-[#FFF2D7]">
+                    <form onSubmit={addTask}>
+                        <TextField
+                            label="Task Name"
+                            variant="outlined"
+                            fullWidth
+                            margin="normal"
+                            value={newTask}
+                            onChange={(e) => setNewTask(e.target.value)}
+                        />
+                        <TextField
+                            label="Due Date"
+                            type="date"
+                            variant="outlined"
+                            fullWidth
+                            margin="normal"
+                            value={taskDueDate}
+                            onChange={(e) => setTaskDueDate(e.target.value)}
+                            InputLabelProps={{ shrink: true }}
+                        />
+                        <TextField
+                            label="Priority"
+                            variant="outlined"
+                            fullWidth
+                            margin="normal"
+                            value={taskPriority}
+                            onChange={(e) => setTaskPriority(e.target.value)}
+                            select
+                            SelectProps={{ native: true }}
+                        >
+                            <option value="low">Low</option>
+                            <option value="medium">Medium</option>
+                            <option value="high">High</option>
+                        </TextField>
+                    </form>
+                </DialogContent>
+                <DialogActions className="bg-[#FFF2D7]">
+                    <Button onClick={closeTaskModal} color="secondary">Cancel</Button>
+                    <Button onClick={addTask} color="primary">Add Task</Button>
+                </DialogActions>
+            </Dialog>
+
+            <Dialog open={isDetailsModalOpen} onClose={closeDetailsModal} maxWidth="sm" fullWidth>
+                <DialogTitle className="bg-[#FFE0B5] text-center font-semibold text-xl">Task Details</DialogTitle>
+                <DialogContent className="bg-[#FFF2D7]">
+                    {selectedTask && (
+                        <div>
+                            <h3 className="text-lg">{selectedTask.name}</h3>
+                            <p>Due Date: {selectedTask.date}</p>
+                            <p>Priority: {selectedTask.priority}</p>
+                            <p>Status: {selectedTask.done ? 'Completed' : 'Pending'}</p>
+                        </div>
+                    )}
+                </DialogContent>
+                <DialogActions className="bg-[#FFF2D7]">
+                    <Button onClick={closeDetailsModal} color="secondary">Close</Button>
+                </DialogActions>
+            </Dialog>
         </div>
     );
 }

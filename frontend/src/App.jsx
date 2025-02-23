@@ -13,7 +13,7 @@ function App() {
   return (
     <Router>
       <div className="bg-[#FFF2D7] min-h-screen">
-        <Disclosure as="nav" className="bg-gradient-to-r from-[#FFE0B5] to-[#FFF2D7] sticky top-0 z-50">
+        <Disclosure as="nav" className="bg-[#FFE0B5] sticky top-0 z-50">
           <div className="mx-auto max-w-7xl px-2 sm:px-6 lg:px-8">
             <div className="relative flex items-center justify-between h-16">
               <div className="absolute inset-y-0 left-0 flex items-center sm:hidden">
@@ -30,7 +30,7 @@ function App() {
               <div className="flex items-center justify-between sm:justify-start">
                 <Link to="/">
                   <img
-                    src="/image.png"
+                    src="/icon.png"
                     alt="main_icon"
                     className="hover:scale-95 transition-all duration-200 ease-in-out w-12 h-auto hidden sm:block"
                   />

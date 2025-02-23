@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import { TextField, Button } from '@mui/material';
+import { TextField, Button, Snackbar, Alert } from '@mui/material';
 import '../global.css';
 
 function Register() {
@@ -10,13 +10,20 @@ function Register() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
+  const [toastMessage, setToastMessage] = useState('');
+  const [toastType, setToastType] = useState('error');
+  const [open, setOpen] = useState(false);
   const navigate = useNavigate();
 
-  function isPasswordValid(password){
-    return password.length > 8 
-      && /[a-z]/g.test(password) 
-      && /[A-Z]/g.test(password) 
-      && /[0-9]/g.test(password) 
+  const handleCloseToast = () => {
+    setOpen(false);
+  };
+
+  function isPasswordValid(password) {
+    return password.length >= 8
+      && /[a-z]/g.test(password)
+      && /[A-Z]/g.test(password)
+      && /[0-9]/g.test(password)
       && /\W|_/g.test(password);
   }
 
@@ -24,19 +31,23 @@ function Register() {
     e.preventDefault();
 
     if (password === confirmPassword) {
-      if(isPasswordValid(password)) {
-        console.log(isPasswordValid(password));
-
+      if (isPasswordValid(password)) {
         const response = await axios.post(`${API_BASE_URL}/register`, { email, password });
         if (response.status === 200) {
-          navigate('/tasktracker');
+          navigate('/login');
+          setToastMessage('Please combine uppercase, lowercase and special characters for your password.');
+          setToastType('error');
+          setOpen(true);
         }
       } else {
-        // #TODO 
-        console.log("(implement proper error for this: failed to meet password criteria)");
+        setToastMessage('Please combine uppercase, lowercase and special characters for your password.');
+        setToastType('error');
+        setOpen(true);
       }
     } else {
-      alert('Passwords do not match!');
+      setToastMessage('Passwords do not match!');
+      setToastType('error');
+      setOpen(true);
     }
   };
 
@@ -61,7 +72,6 @@ function Register() {
                     borderRadius: '12px',
                     borderColor: 'black',
                   },
-
                 }}
               />
             </div>
@@ -79,7 +89,6 @@ function Register() {
                     borderRadius: '12px',
                     borderColor: 'black',
                   },
-
                 }}
               />
             </div>
@@ -97,7 +106,6 @@ function Register() {
                     borderRadius: '12px',
                     borderColor: 'black',
                   },
-
                 }}
               />
             </div>
@@ -137,6 +145,12 @@ function Register() {
         <h1 className="p-10 mr-12 font-bold flex justify-end">TaskMaster</h1>
         <h1 className="p-10 mr-12 font-semibold text-4xl flex justify-end">Sign Up to TaskMaster</h1>
       </div>
+
+      <Snackbar open={open} autoHideDuration={3000} onClose={handleCloseToast}>
+        <Alert onClose={handleCloseToast} severity={toastType} sx={{ width: '100%' }}>
+          {toastMessage}
+        </Alert>
+      </Snackbar>
     </div>
   );
 }

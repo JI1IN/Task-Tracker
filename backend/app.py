@@ -26,7 +26,7 @@ app.config["SECRET_KEY"] = "your_secret_key"  # Ensure it's set
 login_manager = LoginManager()
 login_manager.init_app(app)
 
-CORS(app, supports_credentials=True, origins=["http://localhost:3000"])
+CORS(app, supports_credentials=True, origins="localhost:3000")
 db = SQLAlchemy(app)
 ma = Marshmallow(app)
 
@@ -126,13 +126,13 @@ def login():
 @app.route('/get_lists', methods=['GET'])
 @login_required
 def get_lists():
-    print(session)
     try:
-        tasklists_from_db = Tasklist.query.filter_by(user_id=current_user.get_id())
+        tasklists_from_db = Tasklist.query.filter_by(user_id=current_user.get_id()).all()
         tasklists_serialised = TasklistSchema(many=True).dumps(tasklists_from_db)
         return tasklists_serialised, 200
     except Exception as e:
         return jsonify({'error' : str(e)}), 400
+
         
 
 @app.route('/delete_list', methods=['POST'])
@@ -141,10 +141,19 @@ def delete_list():
     title = request.json.get('title')
     if not title:
         return jsonify({'error': 'Missing title'}), 400
-    Tasklist.query.filter_by(title=title, user_id=current_user.get_id()).delete()
+
+    tasklist = Tasklist.query.filter_by(title=title, user_id=current_user.get_id()).first()
+    if not tasklist:
+        return jsonify({'error': 'Tasklist not found'}), 404
+
+    # Delete tasks in the list before deleting the list itself
+    Task.query.filter_by(tasklist_id=tasklist.tasklist_id).delete()
+    # Now delete the tasklist
+    db.session.delete(tasklist)
     db.session.commit()
 
     return jsonify({'success': True}), 200
+
 
 @app.route('/add_list', methods=['POST'])
 @login_required
@@ -180,8 +189,9 @@ def add_task():
             parsed_due_date = datetime.strptime(due_date, '%Y-%m-%d')
             tasklist = Tasklist.query.filter_by(
                 title=list_title,
-                user_id=current_user.user_id
+                user_id=current_user.get_id()
             ).first()
+
             if not tasklist:
                 return jsonify({'error': 'List not found'}), 404
             list_id = tasklist.tasklist_id
@@ -194,7 +204,13 @@ def add_task():
             )
             db.session.add(task)
             db.session.commit()
-            return jsonify({'success': True}), 201
+            return jsonify({'success': True, 'task': {
+                'name': task_name,
+                'due_date': due_date,
+                'priority': priority,
+                'list_title': list_title
+            }}), 201
+
         except ValueError:
             return jsonify({'error': 'Invalid date format'}), 400
         except Exception as e:
@@ -230,27 +246,37 @@ def delete_task():
         return jsonify({'error': 'Missing required fields'}), 400
 
     try:
-        list_id = db.session.query(Tasklist).filter_by(title=list_title).first().tasklist_id
-        rowsdeleted = Task.query.filter_by(name=task_name, tasklist_id=list_id).delete()
-        db.session.commit()
-        print(rowsdeleted)
+        tasklist = Tasklist.query.filter_by(title=list_title, user_id=current_user.get_id()).first()
+        if tasklist:
+            task = Task.query.filter_by(name=task_name, tasklist_id=tasklist.tasklist_id).first()
+            if task:
+                db.session.delete(task)
+                db.session.commit()
+                return jsonify({'success': True}), 204
+            else:
+                return jsonify({'error': 'Task not found'}), 404
+        else:
+            return jsonify({'error': 'Task list not found'}), 404
     except Exception as e:
         return jsonify({'error' : str(e)}), 400
 
-    return jsonify({'success' : True}), 204
 
 # TODO testing needed
 @app.route('/get_tasks', methods=['GET'])
 @login_required
 def get_tasks():
     try:
-        list_title = request.get('title')
-        list_id = db.session.query(Tasklist).filter_by(title=list_title, user_id=current_user.get_id()).first().tasklist_id
-        tasks_from_db = Task.query.filter_by(tasklist_id=list_id)
-        tasks_serialised = TaskSchema(many=True).dumps(tasks_from_db)
-        return tasks_serialised, 200
+        list_title = request.args.get('title')
+        tasklist = Tasklist.query.filter_by(title=list_title, user_id=current_user.get_id()).first()
+        if tasklist:
+            tasks_from_db = Task.query.filter_by(tasklist_id=tasklist.tasklist_id).all()
+            tasks_serialised = TaskSchema(many=True).dumps(tasks_from_db)
+            return tasks_serialised, 200
+        else:
+            return jsonify({'error': 'Task list not found'}), 404
     except Exception as e:
         return jsonify({'error' : str(e)}), 400
+
 
 if __name__ == '__main__':
     app.run(debug=True)

@@ -1,25 +1,51 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import { TextField, Button, Snackbar, Alert } from '@mui/material';
 import '../global.css';
-import TextField from "@mui/material/TextField"
-import {Button} from "@mui/material";
 
 function Login() {
   const API_BASE_URL = process.env.REACT_APP_API_BASE_URL || 'http://localhost:5000';
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [toastMessage, setToastMessage] = useState('');
+  const [toastType, setToastType] = useState('error');
+  const [open, setOpen] = useState(false);
   const navigate = useNavigate();
+
+  const handleCloseToast = () => {
+    setOpen(false);
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (email && password) {
+    if (!email || !password) {
+      setToastMessage('Please enter both email and password!');
+      setToastType('error');
+      setOpen(true);
+      return;
+    }
+
+    try {
       const response = await axios.post(`${API_BASE_URL}/login`, { email, password });
-      localStorage.setItem('user', JSON.stringify({ email }));
-      // You can redirect to another page after successful login, for example:
-      navigate('/tasktracker');
+
+      if (response.status === 200) {
+        localStorage.setItem('user', JSON.stringify({ email }));
+        setToastMessage('Login successful!');
+        setToastType('success');
+        setOpen(true);
+        navigate('/tasktracker');
+      } else {
+        setToastMessage('Invalid email or password!');
+        setToastType('error');
+        setOpen(true);
+      }
+    } catch (error) {
+      setToastMessage('Error logging in. Please try again.');
+      setToastType('error');
+      setOpen(true);
     }
   };
 
@@ -37,41 +63,40 @@ function Login() {
           <form onSubmit={handleSubmit} className="flex flex-col items-center">
             <div className="mb-4 w-full">
               <TextField
-              id="email"
-              label="Email"
-              variant="outlined"
-              fullWidth
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              className="mt-2"
-              sx={{
-              '& .MuiOutlinedInput-root': {
-              borderRadius: '12px',
-              },
-              '& .Mui-focused .MuiOutlinedInput-notchedOutline': {
-              borderColor: '#F8C794',
-          },
-          }}
-      />
-
+                id="email"
+                label="Email"
+                variant="outlined"
+                fullWidth
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                className="mt-2"
+                sx={{
+                  '& .MuiOutlinedInput-root': {
+                    borderRadius: '12px',
+                  },
+                  '& .Mui-focused .MuiOutlinedInput-notchedOutline': {
+                    borderColor: '#F8C794',
+                  },
+                }}
+              />
             </div>
             <div className="mb-4 w-full">
               <TextField
-              id="outlined-password-input"
-              label="Password"
-              type="password"
-              fullWidth
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              autoComplete="current-password"
-               sx={{
-              '& .MuiOutlinedInput-root': {
-              borderRadius: '12px',
-              },
-              '& .Mui-focused .MuiOutlinedInput-notchedOutline': {
-              borderColor: '#F8C794',
-            },
-            }}
+                id="outlined-password-input"
+                label="Password"
+                type="password"
+                fullWidth
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                autoComplete="current-password"
+                sx={{
+                  '& .MuiOutlinedInput-root': {
+                    borderRadius: '12px',
+                  },
+                  '& .Mui-focused .MuiOutlinedInput-notchedOutline': {
+                    borderColor: '#F8C794',
+                  },
+                }}
               />
             </div>
             <div className="w-full flex justify-center ">
@@ -104,6 +129,12 @@ function Login() {
           </div>
         </div>
       </div>
+
+      <Snackbar open={open} autoHideDuration={3000} onClose={handleCloseToast}>
+        <Alert onClose={handleCloseToast} severity={toastType} sx={{ width: '100%' }}>
+          {toastMessage}
+        </Alert>
+      </Snackbar>
     </div>
   );
 }
