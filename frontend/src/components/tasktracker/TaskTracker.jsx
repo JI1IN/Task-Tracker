@@ -256,14 +256,15 @@ function TaskTracker() {
                         </Button>
                     </form>
 
-                    <ul>
+                    <div className="flex flex-col gap-2">
                         {lists.map((list) => (
-                            <li key={list.title} className="flex justify-between items-center mb-2">
+                            <div key={list.title}
+                                 className="flex justify-between items-center p-2 rounded-lg bg-orange-100 hover:bg-[#D4A57A] w-full transition-colors duration-300">
                                 <span
-                                    className={`cursor-pointer p-2 rounded-lg bg-orange-100 hover:bg-[#D4A57A] w-full block transition-colors duration-300`}
-                                    onClick={() => setSelectedList(list.title)}
+                                className="cursor-pointer w-full block"
+                                onClick={() => setSelectedList(list.title)}
                                 >
-                                    {list.title}
+                                {list.title}
                                 </span>
                                 <div className="ml-0.5">
                                     <Button
@@ -275,10 +276,11 @@ function TaskTracker() {
                                         Delete
                                     </Button>
                                 </div>
-                            </li>
+                            </div>
                         ))}
-                    </ul>
+                    </div>
                 </aside>
+
 
                 <main className="w-full lg:w-4/5 bg-[#FFF2D7] p-6">
                     <header className="mb-4">
@@ -354,7 +356,7 @@ function TaskTracker() {
                             margin="normal"
                             value={taskDueDate}
                             onChange={(e) => setTaskDueDate(e.target.value)}
-                            InputLabelProps={{ shrink: true }}
+                            InputLabelProps={{shrink: true}}
                         />
                         <TextField
                             label="Priority"
@@ -364,7 +366,7 @@ function TaskTracker() {
                             value={taskPriority}
                             onChange={(e) => setTaskPriority(e.target.value)}
                             select
-                            SelectProps={{ native: true }}
+                            SelectProps={{native: true}}
                         >
                             <option value="low">Low</option>
                             <option value="medium">Medium</option>
