@@ -10,7 +10,7 @@ function TaskTracker() {
 
     const today = new Date().toISOString().split('T')[0];
     const [lists, setLists] = useState([]);
-    const [tasks, setTasks] = useState([]); // State to store tasks for the selected list
+    const [tasks, setTasks] = useState([]);
     const [newListTitle, setNewListTitle] = useState('');
     const [newTask, setNewTask] = useState('');
     const [taskDueDate, setTaskDueDate] = useState(today);
@@ -69,12 +69,10 @@ function TaskTracker() {
         }
     };
 
-    // Function to generate a unique title for the new list
     const generateUniqueListTitle = (title) => {
         let uniqueTitle = title;
         let index = 1;
 
-        // Check if the list title already exists
         while (lists.some((list) => list.title === uniqueTitle)) {
             uniqueTitle = `${title} (${index})`;
             index++;
@@ -83,7 +81,6 @@ function TaskTracker() {
         return uniqueTitle;
     };
 
-    // Modify the addList function to use the unique title
     const addList = async (event) => {
         event.preventDefault();
         if (!newListTitle) {
@@ -265,7 +262,7 @@ function TaskTracker() {
                                 onClick={() => setSelectedList(list.title)}
                                 >
                                 {list.title}
-                                </span>
+                </span>
                                 <div className="ml-0.5">
                                     <Button
                                         variant="contained"
@@ -336,66 +333,67 @@ function TaskTracker() {
                 </main>
             </div>
 
-            <Dialog open={isTaskModalOpen} onClose={closeTaskModal} maxWidth="sm" fullWidth>
+           <Dialog open={isTaskModalOpen} onClose={closeTaskModal} maxWidth="sm" fullWidth>
                 <DialogTitle className="bg-[#FFE0B5] text-center font-semibold text-xl">Add New Task</DialogTitle>
                 <DialogContent className="bg-[#FFF2D7]">
-                    <form onSubmit={addTask}>
-                        <TextField
-                            label="Task Name"
-                            variant="outlined"
-                            fullWidth
-                            margin="normal"
-                            value={newTask}
-                            onChange={(e) => setNewTask(e.target.value)}
-                        />
-                        <TextField
-                            label="Due Date"
-                            type="date"
-                            variant="outlined"
-                            fullWidth
-                            margin="normal"
-                            value={taskDueDate}
-                            onChange={(e) => setTaskDueDate(e.target.value)}
-                            InputLabelProps={{shrink: true}}
-                        />
-                        <TextField
-                            label="Priority"
-                            variant="outlined"
-                            fullWidth
-                            margin="normal"
-                            value={taskPriority}
-                            onChange={(e) => setTaskPriority(e.target.value)}
-                            select
-                            SelectProps={{native: true}}
-                        >
-                            <option value="low">Low</option>
-                            <option value="medium">Medium</option>
-                            <option value="high">High</option>
-                        </TextField>
-                    </form>
-                </DialogContent>
-                <DialogActions className="bg-[#FFF2D7]">
-                    <Button onClick={closeTaskModal} color="secondary">Cancel</Button>
-                    <Button onClick={addTask} color="primary">Add Task</Button>
-                </DialogActions>
-            </Dialog>
+                <form onSubmit={addTask}>
+                <TextField
+                label="Task Name"
+                variant="outlined"
+                fullWidth
+                margin="normal"
+                value={newTask}
+                onChange={(e) => setNewTask(e.target.value)}
+                />
+                <TextField
+                    label="Due Date"
+                    type="date"
+                    variant="outlined"
+                    fullWidth
+                    margin="normal"
+                    value={taskDueDate} // This should be in YYYY-MM-DD format (already)
+                    onChange={(e) => setTaskDueDate(e.target.value)} // Automatically handled in YYYY-MM-DD format
+                    InputLabelProps={{ shrink: true }}
+                />
+                <TextField
+                    label="Priority"
+                    variant="outlined"
+                    fullWidth
+                    margin="normal"
+                    value={taskPriority}
+                    onChange={(e) => setTaskPriority(e.target.value)}
+                    select
+                    SelectProps={{ native: true }}
+                >
+                <option value="low">Low</option>
+                <option value="medium">Medium</option>
+                <option value="high">High</option>
+            </TextField>
+        </form>
+        </DialogContent>
+        <DialogActions className="bg-[#FFF2D7]">
+            <Button onClick={closeTaskModal} color="secondary">Cancel</Button>
+            <Button onClick={addTask} color="primary">Add Task</Button>
+        </DialogActions>
+    </Dialog>
+
 
             <Dialog open={isDetailsModalOpen} onClose={closeDetailsModal} maxWidth="sm" fullWidth>
-                <DialogTitle className="bg-[#FFE0B5] text-center font-semibold text-xl">Task Details</DialogTitle>
-                <DialogContent className="bg-[#FFF2D7]">
-                    {selectedTask && (
-                        <div>
-                            <h3 className="text-lg">{selectedTask.name}</h3>
-                            <p>Due Date: {selectedTask.date}</p>
-                            <p>Priority: {selectedTask.priority}</p>
-                            <p>Status: {selectedTask.done ? 'Completed' : 'Pending'}</p>
-                        </div>
-                    )}
-                </DialogContent>
-                <DialogActions className="bg-[#FFF2D7]">
-                    <Button onClick={closeDetailsModal} color="secondary">Close</Button>
-                </DialogActions>
-            </Dialog>
+            <DialogTitle className="bg-[#FFE0B5] text-center font-semibold text-xl">Task Details</DialogTitle>
+            <DialogContent className="bg-[#FFF2D7]">
+            {selectedTask && (
+            <div>
+                <h3 className="text-lg">{selectedTask.name}</h3>
+                <p>Due Date: {selectedTask.due_date ? new Date(selectedTask.due_date).toLocaleDateString('en-GB') : 'No due date'}</p>
+                <p>Priority: {selectedTask.priority}</p>
+                <p>Status: {selectedTask.done ? 'Completed' : 'Pending'}</p>
+            </div>
+            )}
+        </DialogContent>
+        <DialogActions className="bg-[#FFF2D7]">
+        <Button onClick={closeDetailsModal} color="secondary">Close</Button>
+        </DialogActions>
+        </Dialog>
         </div>
     );
 }

@@ -57,7 +57,7 @@ class Task(db.Model):
     task_id = db.Column(db.Integer, primary_key=True)
     tasklist_id = db.Column(db.Integer, db.ForeignKey('tasklist.tasklist_id'), nullable=False)
     name = db.Column(db.String(100), nullable=False)
-    due_date = db.Column(db.Date)
+    date = db.Column(db.Date)
     priority = db.Column(db.String(16))
     done = db.Column(db.Boolean, default=False)
 
@@ -180,13 +180,13 @@ def add_list():
 @login_required
 def add_task():
     task_name = request.json.get('task')
-    due_date = request.json.get('date')
+    date = request.json.get('date')
     priority = request.json.get('priority')
     list_title = request.json.get('list_title')
 
-    if task_name and due_date and priority and list_title:
+    if task_name and date and priority and list_title:
         try:
-            parsed_due_date = datetime.strptime(due_date, '%Y-%m-%d')
+            parsed_date = datetime.strptime(date, '%YYYY-%mm-%dd')
             tasklist = Tasklist.query.filter_by(
                 title=list_title,
                 user_id=current_user.get_id()
@@ -199,14 +199,14 @@ def add_task():
             task = Task(
                 tasklist_id=list_id,
                 name=task_name,
-                due_date=parsed_due_date,
+                date=parsed_date,
                 priority=priority
             )
             db.session.add(task)
             db.session.commit()
             return jsonify({'success': True, 'task': {
                 'name': task_name,
-                'due_date': due_date,
+                'date': date,
                 'priority': priority,
                 'list_title': list_title
             }}), 201
@@ -273,7 +273,7 @@ def get_tasks():
             tasks_serialised = TaskSchema(many=True).dumps(tasks_from_db)
             return tasks_serialised, 200
         else:
-            return jsonify({'error': 'Task list not found'}), 404
+            return jsonify({'error': 'Tasks not found'}), 404
     except Exception as e:
         return jsonify({'error' : str(e)}), 400
 
