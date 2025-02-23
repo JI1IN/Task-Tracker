@@ -393,7 +393,8 @@ function TaskTracker() {
         <DialogActions className="bg-[#FFF2D7]">
         <Button onClick={closeDetailsModal} color="secondary">Close</Button>
         </DialogActions>
-        </Dialog>
+</Dialog>
+
         </div>
     );
 }
