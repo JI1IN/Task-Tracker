@@ -11,15 +11,16 @@ from sqlalchemy import select
 from datetime import datetime, timedelta
 import bcrypt
 
+
 app = Flask(__name__)
 
 # TODO configure to be more secure
 app.config['SESSION_PERMANENT'] = True
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///userdata.db' 
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///userdata.db'
 app.config["SESSION_COOKIE_NAME"] = "my_session"
 app.config["SESSION_COOKIE_HTTPONLY"] = True
 app.config["SESSION_COOKIE_SECURE"] = False  # True if using HTTPS
-app.config["SESSION_COOKIE_SAMESITE"] = "Lax"  
+app.config["SESSION_COOKIE_SAMESITE"] = "Lax"
 app.config["REMEMBER_COOKIE_DURATION"] = timedelta(days=7)  # Keep session alive
 app.config["SECRET_KEY"] = "your_secret_key"  # Ensure it's set
 
@@ -36,19 +37,19 @@ class User(UserMixin, db.Model):
     email = db.Column(db.String(100), unique=True, nullable=False)
     password_hash = db.Column(db.String(255), nullable=False)
     password_salt = db.Column(db.String(255), nullable=False)
-    
+
     # Define relationship with tasklist
     tasklists = db.relationship('Tasklist', backref='user', lazy=True)
     def get_id(self):
         return self.user_id
-   
+
 
 class Tasklist(db.Model):
     __tablename__ = 'tasklist'
     tasklist_id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('user.user_id'), nullable=False)
     title = db.Column(db.String, nullable=False)
-    
+
     # Define relationship with tasks
     tasks = db.relationship('Task', backref='tasklist', lazy=True)
 
@@ -65,13 +66,13 @@ class Task(db.Model):
 class TasklistSchema(ma.SQLAlchemyAutoSchema):
     class Meta:
         model = Tasklist
-        include_relationships = True  
-        load_instance = True  
+        include_relationships = True
+        load_instance = True
 
 class TaskSchema(ma.SQLAlchemyAutoSchema):
     class Meta:
         model = Task
-        include_fk = True  
+        include_fk = True
         load_instance = True
 
 
@@ -133,7 +134,6 @@ def get_lists():
     except Exception as e:
         return jsonify({'error' : str(e)}), 400
 
-        
 
 @app.route('/delete_list', methods=['POST'])
 @login_required
@@ -161,7 +161,7 @@ def add_list():
     print(current_user.get_id())
     print(session)
     list_title = request.json.get('title')
-    
+
     if not list_title or list_title.isspace():
         return jsonify({'error': 'Missing title'}), 400
     elif db.session.query(Tasklist).filter_by(title=list_title, user_id=current_user.get_id()).first():

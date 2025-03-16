@@ -6,3 +6,4 @@ flask_sqlalchemy==3.1.1
 bcrypt==4.2.1
 SQLAlchemy==2.0.36
 marshmallow-sqlalchemy
+flask-session==0.8.0

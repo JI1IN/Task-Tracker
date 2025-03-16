@@ -4,7 +4,7 @@ import axios from 'axios';
 import { TextField, Button, Snackbar, Alert } from '@mui/material';
 import '../global.css';
 
-function Register() {
+function Register({ setUser }) {
   const API_BASE_URL = process.env.REACT_APP_API_BASE_URL || 'http://localhost:5000';
 
   const [email, setEmail] = useState('');
@@ -32,10 +32,20 @@ function Register() {
 
     if (password === confirmPassword) {
       if (isPasswordValid(password)) {
-        const response = await axios.post(`${API_BASE_URL}/register`, { email, password });
-        if (response.status === 200) {
-          navigate('/login');
-          setToastMessage('Please combine uppercase, lowercase and special characters for your password.');
+        try {
+          const response = await axios.post(`${API_BASE_URL}/register`, { email, password });
+          if (response.status === 200) {
+            const userData = { email };
+            localStorage.setItem('user', JSON.stringify(userData));
+            setUser(userData); // Update the App component's state
+
+            setToastMessage('Sign-Up successful, please log in.');
+            setToastType('success');
+            setOpen(true);
+            navigate('/login');
+          }
+        } catch (error) {
+          setToastMessage('Error registering. Please try again.');
           setToastType('error');
           setOpen(true);
         }

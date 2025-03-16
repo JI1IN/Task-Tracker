@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { TextField, Button, Snackbar, Alert } from '@mui/material';
 import '../global.css';
 
-function Login() {
+function Login({ setUser }) {
   const API_BASE_URL = process.env.REACT_APP_API_BASE_URL || 'http://localhost:5000';
 
   const [email, setEmail] = useState('');
@@ -21,26 +21,20 @@ function Login() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (!email || !password) {
-      setToastMessage('Please enter both email and password!');
-      setToastType('error');
-      setOpen(true);
-      return;
-    }
-
     try {
       const response = await axios.post(`${API_BASE_URL}/login`, { email, password });
-
       if (response.status === 200) {
-        localStorage.setItem('user', JSON.stringify({ email }));
+        const userData = { email };
+        sessionStorage.setItem('user', JSON.stringify(userData));
+        setUser(userData);
+
         setToastMessage('Login successful!');
         setToastType('success');
         setOpen(true);
-        navigate('/tasktracker');
-      } else {
-        setToastMessage('Invalid email or password!');
-        setToastType('error');
-        setOpen(true);
+
+        setTimeout(() => {
+          navigate("/tasktracker");
+        }, 1000);
       }
     } catch (error) {
       setToastMessage('Error logging in. Please try again.');
