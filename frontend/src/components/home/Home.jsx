@@ -8,7 +8,7 @@ function Home() {
           <section
               className="flex flex-col justify-center items-center min-h-screen bg-orange-100 text-center px-4 pt-16">
               <div
-                 className="bg-orange-200 p-8 sm:p-16 rounded-lg shadow-xl sm:w-3/5 lg:w-1/2 h-auto sm:h-[400px] flex flex-col justify-center items-center">
+                 className="p-8 sm:p-16 rounded-lg sm:w-3/5 lg:w-1/2 h-auto sm:h-[400px] flex flex-col justify-center items-center">
                   <h1 className="text-5xl sm:text-7xl font-bold mb-6">
                       TaskMaster
                   </h1>

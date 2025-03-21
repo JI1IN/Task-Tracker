@@ -8,6 +8,8 @@ function TaskTracker() {
     axios.defaults.withCredentials = true;
     axios.defaults.credentials = 'include';
 
+
+
     const today = new Date().toISOString().split('T')[0];
     const [lists, setLists] = useState([]);
     const [tasks, setTasks] = useState([]);
@@ -222,7 +224,7 @@ function TaskTracker() {
     }, [selectedList]);
 
     return (
-        <div className="min-h-screen bg-orange-100">
+        <div className="min-h-screen ">
             <Snackbar open={open} autoHideDuration={3000} onClose={handleCloseToast}>
                 <Alert onClose={handleCloseToast} severity={toastType} sx={{ width: '100%' }}>
                     {toastMessage}
@@ -253,7 +255,7 @@ function TaskTracker() {
                         </Button>
                     </form>
 
-                    <div className="flex flex-col gap-2">
+                    <div className="flex flex-col gap-2 ">
                         {lists.map((list) => (
                             <div key={list.title}
                                  className="flex justify-between items-center p-2 rounded-lg bg-orange-100 hover:bg-[#D4A57A] w-full transition-colors duration-300">
@@ -279,7 +281,7 @@ function TaskTracker() {
                 </aside>
 
 
-                <main className="w-full lg:w-4/5 bg-[#FFF2D7] p-6">
+                <main className="w-full lg:w-4/5  p-6">
                     <header className="mb-4">
                         <h1 className="text-3xl font-semibold">{selectedList || 'Select a List'}</h1>
                     </header>
