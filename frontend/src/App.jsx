@@ -18,7 +18,7 @@ function App() {
   const isTaskTrackerPage = location.pathname === "/tasktracker"
 
   return (
-    <div className="bg-[#FFF2D7] min-h-screen">
+    <div className="bg-orange-100 min-h-screen">
       <Disclosure
         as="nav"
         className={`fixed z-50 ease-in-out bg-black/80 backdrop-blur-sm shadow-lg
@@ -29,7 +29,7 @@ function App() {
         }`}
         style={{
           transition:
-            "width 700ms ease-in-out, left 550ms ease-in-out, right 550ms ease-in-out, transform 550ms ease-in-out, top 550ms ease-in-out, border-radius 550ms ease-in-out, max-height 550ms ease-in-out",
+            "width 550ms ease-in-out, left 550ms ease-in-out, right 550ms ease-in-out, transform 550ms ease-in-out, top 550ms ease-in-out, border-radius 550ms ease-in-out, max-height 550ms ease-in-out",
         }}
       >
         {({ open }) => (
@@ -43,11 +43,10 @@ function App() {
                   TaskMaster
                 </Link>
 
-                {/* Desktop Nav Links - Only show horizontally when not on TaskTracker */}
                 {!isTaskTrackerPage && (
                   <div className="hidden md:flex space-x-6">
                     <Link to="/tasktracker" className="text-white hover:text-gray-300 transition-colors duration-300">
-                        Tracker
+                      Tracker
                     </Link>
                     <Link to="/about" className="text-white hover:text-gray-300 transition-colors duration-300">
                       About
@@ -55,14 +54,12 @@ function App() {
                     <Link to="/contact" className="text-white hover:text-gray-300 transition-colors duration-300">
                       Contact
                     </Link>
-
                   </div>
                 )}
               </div>
 
-              {/* User Auth Buttons - Only show horizontally when not on TaskTracker */}
               {!isTaskTrackerPage && (
-                <div className="hidden md:flex space-x-4 transition-all duration-1000 ease-in-out">
+                <div className="hidden md:flex items-center space-x-4 transition-all duration-1000 ease-in-out min-w-[180px] justify-end">
                   <Button
                     component={Link}
                     to="/login"
@@ -73,6 +70,7 @@ function App() {
                       borderColor: "#F8C794",
                       "&:hover": { borderColor: "#e0a877" },
                       transition: "all 0.3s ease",
+                      minWidth: "80px",
                     }}
                   >
                     Sign in
@@ -86,6 +84,7 @@ function App() {
                       backgroundColor: "#F8C794",
                       "&:hover": { backgroundColor: "#e0a877" },
                       transition: "all 0.3s ease",
+                      minWidth: "80px",
                     }}
                   >
                     Sign up
@@ -124,7 +123,6 @@ function App() {
                   >
                     Contact
                   </Link>
-
                 </div>
 
                 {/* Auth buttons below nav links in sidebar mode */}
@@ -133,6 +131,7 @@ function App() {
                     component={Link}
                     to="/login"
                     variant="outlined"
+                    fullWidth
                     sx={{
                       textTransform: "none",
                       color: "#F8C794",
@@ -147,6 +146,7 @@ function App() {
                     component={Link}
                     to="/register"
                     variant="contained"
+                    fullWidth
                     sx={{
                       textTransform: "none",
                       backgroundColor: "#F8C794",
@@ -187,6 +187,7 @@ function App() {
                     component={Link}
                     to="/login"
                     variant="outlined"
+                    fullWidth
                     sx={{
                       textTransform: "none",
                       color: "#F8C794",
@@ -194,7 +195,6 @@ function App() {
                       "&:hover": { borderColor: "#e0a877" },
                       transition: "all 0.3s ease",
                     }}
-                    className="w-full"
                   >
                     Sign in
                   </Button>
@@ -202,13 +202,13 @@ function App() {
                     component={Link}
                     to="/register"
                     variant="contained"
+                    fullWidth
                     sx={{
                       textTransform: "none",
                       backgroundColor: "#F8C794",
                       "&:hover": { backgroundColor: "#e0a877" },
                       transition: "all 0.3s ease",
                     }}
-                    className="w-full"
                   >
                     Sign up
                   </Button>
