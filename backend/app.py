@@ -23,6 +23,13 @@ app.config["SESSION_COOKIE_SECURE"] = False  # True if using HTTPS
 app.config["SESSION_COOKIE_SAMESITE"] = "Lax"
 app.config["REMEMBER_COOKIE_DURATION"] = timedelta(days=7)  # Keep session alive
 app.config["SECRET_KEY"] = "your_secret_key"  # Ensure it's set
+app.config['MAIL_SERVER'] = 'smtp.gmail.com'
+app.config['MAIL_PORT'] = 587
+app.config['MAIL_USE_TLS'] = True
+app.config['MAIL_USERNAME'] = 'tasktracker.official@gmail.com'  # Replace with your email address
+app.config['MAIL_PASSWORD'] = ''  # Replace with your email password or app-specific password
+
+
 
 login_manager = LoginManager()
 login_manager.init_app(app)
@@ -279,4 +286,4 @@ def get_tasks():
 
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(host='0.0.0.0', port=5000)

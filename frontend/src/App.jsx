@@ -1,42 +1,68 @@
-"use client"
+import { useState, useEffect } from "react";
+import { Link, useLocation, Route, Routes } from "react-router-dom";
+import { Disclosure } from "@headlessui/react";
+import { Bars3Icon, XMarkIcon } from "@heroicons/react/24/outline";
+import { Button } from "@mui/material";
+import Home from "./components/home/Home";
+import About from "./components/about/About";
+import Contact from "./components/contact/Contact";
+import TaskTracker from "./components/tasktracker/TaskTracker";
+import Login from "./components/login/login";
+import Register from "./components/register/register";
+import PageNotFound from "./components/pageNotFound/404";
+import LoadingScreen from "./components/LoadingScreen/loadingScreen";
 
-import { useState } from "react"
-import { Link, useLocation, Route, Routes } from "react-router-dom"
-import { Disclosure } from "@headlessui/react"
-import { Bars3Icon, XMarkIcon } from "@heroicons/react/24/outline"
-import { Button } from "@mui/material"
-import Home from "./components/home/Home"
-import About from "./components/about/About"
-import Contact from "./components/contact/Contact"
-import TaskTracker from "./components/tasktracker/TaskTracker"
-import Login from "./components/login/login"
-import Register from "./components/register/register"
+import GitHubIcon from "@mui/icons-material/GitHub";
+import LinkedInIcon from "@mui/icons-material/LinkedIn";
+import TwitterIcon from "@mui/icons-material/Twitter";
+import FacebookIcon from "@mui/icons-material/Facebook";
 
 function App() {
-  const [user, setUser] = useState(null)
-  const location = useLocation()
-  const isTaskTrackerPage = location.pathname === "/tasktracker"
+  const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const location = useLocation();
+  const isTaskTrackerPage = location.pathname === "/tasktracker";
+
+  useEffect(() => {
+    setTimeout(() => {
+      setLoading(false);
+    }, 3000);
+  }, []);
+
+  if (loading) {
+    return <LoadingScreen />;
+  }
+
+  const socialLinks = [
+    {
+      name: "GitHub",
+      url: "https://github.com/JI1IN/Task-Tracker",
+      icon: <GitHubIcon />,
+    },
+    {
+      name: "LinkedIn",
+      url: "https://www.linkedin.com/in/jason-chen-0784bb329/",
+      icon: <LinkedInIcon />,
+    },
+
+  ];
 
   return (
     <div className="bg-orange-100 min-h-screen">
       <Disclosure
         as="nav"
-        className={`fixed z-50 ease-in-out bg-black/80 backdrop-blur-sm shadow-lg
+        className={`fixed z-50 bg-black/80 backdrop-blur-sm shadow-lg font-sans
         ${
           isTaskTrackerPage
             ? "md:w-[280px] md:right-4 md:top-4 md:rounded-xl md:max-h-[calc(100vh-2rem)] md:overflow-auto w-full sm:w-full top-0 right-0 rounded-b-xl"
             : "w-[90%] sm:w-[80%] md:w-[70%] lg:w-[60%] left-1/2 transform -translate-x-1/2 top-4 rounded-xl"
         }`}
-        style={{
-          transition:
-            "width 550ms ease-in-out, left 550ms ease-in-out, right 550ms ease-in-out, transform 550ms ease-in-out, top 550ms ease-in-out, border-radius 550ms ease-in-out, max-height 550ms ease-in-out",
-        }}
       >
         {({ open }) => (
           <>
             <div className="px-4 py-3 flex items-center justify-between">
               <div
-                className={`flex items-center transition-all duration-1000 ease-in-out ${isTaskTrackerPage ? "md:w-full md:justify-center" : "space-x-6"}`}
+                className={`flex items-center ${isTaskTrackerPage ? "md:w-full md:justify-center" : "space-x-6"}`}
               >
                 <Link to="/" className="text-white text-lg font-bold flex items-center">
                   <img src="/icon.png" alt="main_icon" className="w-10 h-10 mr-2" />
@@ -59,7 +85,7 @@ function App() {
               </div>
 
               {!isTaskTrackerPage && (
-                <div className="hidden md:flex items-center space-x-4 transition-all duration-1000 ease-in-out min-w-[180px] justify-end">
+                <div className="hidden md:flex items-center space-x-4 min-w-[180px] justify-end">
                   <Button
                     component={Link}
                     to="/login"
@@ -69,8 +95,6 @@ function App() {
                       color: "#F8C794",
                       borderColor: "#F8C794",
                       "&:hover": { borderColor: "#e0a877" },
-                      transition: "all 0.3s ease",
-                      minWidth: "80px",
                     }}
                   >
                     Sign in
@@ -83,8 +107,6 @@ function App() {
                       textTransform: "none",
                       backgroundColor: "#F8C794",
                       "&:hover": { backgroundColor: "#e0a877" },
-                      transition: "all 0.3s ease",
-                      minWidth: "80px",
                     }}
                   >
                     Sign up
@@ -92,158 +114,62 @@ function App() {
                 </div>
               )}
 
-              {/* Mobile Menu Button - Hidden on desktop */}
-              <Disclosure.Button className="md:hidden text-white focus:outline-none transition-transform duration-300">
+              {/* Mobile Menu Button */}
+              <Disclosure.Button className="md:hidden text-white focus:outline-none">
                 {open ? <XMarkIcon className="w-6 h-6" /> : <Bars3Icon className="w-6 h-6" />}
               </Disclosure.Button>
             </div>
-
-            {/* TaskTracker Sidebar Navigation Links - Only visible on desktop when on TaskTracker */}
-            {isTaskTrackerPage && (
-              <div
-                className="hidden md:flex flex-col items-center py-4 border-t border-gray-700 transition-all duration-1000 ease-in-out"
-                style={{ transition: "opacity 1000ms ease-in-out, height 1000ms ease-in-out" }}
-              >
-                <div className="flex flex-col items-center space-y-4 w-full px-4">
-                  <Link
-                    to="/tasktracker"
-                    className="text-white hover:text-gray-300 w-full text-center py-2 transition-colors duration-300"
-                  >
-                    Tracker
-                  </Link>
-                  <Link
-                    to="/about"
-                    className="text-white hover:text-gray-300 w-full text-center py-2 transition-colors duration-300"
-                  >
-                    About
-                  </Link>
-                  <Link
-                    to="/contact"
-                    className="text-white hover:text-gray-300 w-full text-center py-2 transition-colors duration-300"
-                  >
-                    Contact
-                  </Link>
-                </div>
-
-                {/* Auth buttons below nav links in sidebar mode */}
-                <div className="flex flex-col space-y-3 w-full px-6 mt-6 mb-4 transition-all duration-1000 ease-in-out">
-                  <Button
-                    component={Link}
-                    to="/login"
-                    variant="outlined"
-                    fullWidth
-                    sx={{
-                      textTransform: "none",
-                      color: "#F8C794",
-                      borderColor: "#F8C794",
-                      "&:hover": { borderColor: "#e0a877" },
-                      transition: "all 0.3s ease",
-                    }}
-                  >
-                    Sign in
-                  </Button>
-                  <Button
-                    component={Link}
-                    to="/register"
-                    variant="contained"
-                    fullWidth
-                    sx={{
-                      textTransform: "none",
-                      backgroundColor: "#F8C794",
-                      "&:hover": { backgroundColor: "#e0a877" },
-                      transition: "all 0.3s ease",
-                    }}
-                  >
-                    Sign up
-                  </Button>
-                </div>
-              </div>
-            )}
-
-            {/* Mobile Menu */}
-            <Disclosure.Panel className="md:hidden bg-black/90 rounded-b-xl text-center py-4 px-4 transition-all duration-300 ease-in-out">
-              <div className="space-y-4">
-                <Link
-                  to="/tasktracker"
-                  className="text-white block py-2 hover:bg-black/40 rounded-lg transition-colors duration-300"
-                >
-                  Tracker
-                </Link>
-                <Link
-                  to="/about"
-                  className="text-white block py-2 hover:bg-black/40 rounded-lg transition-colors duration-300"
-                >
-                  About
-                </Link>
-                <Link
-                  to="/contact"
-                  className="text-white block py-2 hover:bg-black/40 rounded-lg transition-colors duration-300"
-                >
-                  Contact
-                </Link>
-
-                <div className="pt-2 space-y-3">
-                  <Button
-                    component={Link}
-                    to="/login"
-                    variant="outlined"
-                    fullWidth
-                    sx={{
-                      textTransform: "none",
-                      color: "#F8C794",
-                      borderColor: "#F8C794",
-                      "&:hover": { borderColor: "#e0a877" },
-                      transition: "all 0.3s ease",
-                    }}
-                  >
-                    Sign in
-                  </Button>
-                  <Button
-                    component={Link}
-                    to="/register"
-                    variant="contained"
-                    fullWidth
-                    sx={{
-                      textTransform: "none",
-                      backgroundColor: "#F8C794",
-                      "&:hover": { backgroundColor: "#e0a877" },
-                      transition: "all 0.3s ease",
-                    }}
-                  >
-                    Sign up
-                  </Button>
-                </div>
-              </div>
-            </Disclosure.Panel>
           </>
         )}
       </Disclosure>
 
-      {/* Main Content - Add padding only on desktop when on TaskTracker page */}
       <div
-        className={`
-          ${isTaskTrackerPage ? "md:pl-0 md:pr-[300px]" : ""} 
-          pt-16 md:pt-0 
-          transition-all duration-1000 ease-in-out
-        `}
+        className={`${isTaskTrackerPage ? "md:pl-0 md:pr-[300px]" : ""} pt-16 md:pt-0`}
       >
         <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/contact" element={<Contact />} />
-          <Route path="/about" element={<About />} />
-          <Route path="/tasktracker" element={<TaskTracker />} />
-          <Route path="/login" element={<Login setUser={setUser} />} />
-          <Route path="/register" element={<Register setUser={setUser} />} />
+          <Route exact path="/" element={<Home />} />
+          <Route exact path="/contact" element={<Contact />} />
+          <Route exact path="/about" element={<About />} />
+          <Route exact path="/tasktracker" element={<TaskTracker />} />
+          <Route exact path="/login" element={<Login setUser={setUser} />} />
+          <Route exact path="/register" element={<Register setUser={setUser} />} />
+          <Route path="*" element={<PageNotFound />} />
         </Routes>
       </div>
 
-      {/* Footer */}
-      <footer className="bg-gray-800 text-gray-300 py-6 text-center">
-        <p className="text-sm">&copy; {new Date().getFullYear()} Jason Chen. All rights reserved.</p>
+      <footer className="bg-gray-800 text-gray-300 py-8">
+        <div className="max-w-screen-xl mx-auto px-4">
+          <div className="flex flex-col sm:flex-row justify-between items-center space-y-4 sm:space-y-0">
+            <div className="text-center sm:text-left">
+              <p className="text-lg font-semibold text-white">
+                <Link to="/" className="text-white hover:text-gray-400 transition-colors duration-300">
+                  TaskMaster
+                </Link>
+              </p>
+              <p className="mt-2 text-sm text-gray-400">
+                &copy; {new Date().getFullYear()} Jason Chen. All rights reserved.
+              </p>
+            </div>
+
+            <div className="flex space-x-6 mt-4 sm:mt-0">
+              {socialLinks.map((link) => (
+                <a
+                  key={link.name}
+                  href={link.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-white hover:text-gray-400 transition-colors duration-300"
+                  aria-label={link.name}
+                >
+                  {link.icon}
+                </a>
+              ))}
+            </div>
+          </div>
+        </div>
       </footer>
     </div>
-  )
+  );
 }
 
-export default App
-
+export default App;
